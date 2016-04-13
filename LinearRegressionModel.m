@@ -1,4 +1,4 @@
-function [ weight_mat ] = LinearRegressionPred( train_ecog_data,train_labels,samplingRate )
+function [ weight_mat ] = LinearRegressionModel( train_ecog_data,train_labels,samplingRate )
 
     wins = NumWins(length(train_ecog_data),samplingRate,0.1,0.05);
     
