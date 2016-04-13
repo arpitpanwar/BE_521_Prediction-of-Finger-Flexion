@@ -1,4 +1,4 @@
-function [ pred_rounded ] = Prediction( weight_mat,train_labels,test_data,samplingRate )
+function [ pred_rounded ] = Prediction( weight_mat,train_labels,test_data,samplingRate,duration )
 
     wins = NumWins(length(test_data),samplingRate,0.1,0.05);
 
@@ -9,9 +9,10 @@ function [ pred_rounded ] = Prediction( weight_mat,train_labels,test_data,sampli
     % Spline function takes in the time that y occured and what time y should
     % occur
     pred_splined = zeros([length(test_data),5]);
-
+    len = length(pred);
+    stepval = (309.9)/len;
     for i=1:5
-        pred_splined(:,i) = spline((0:0.05:309.9),pred(:,i),(0:0.001:309.998));
+        pred_splined(:,i) = spline((0:stepval:309.9-stepval),pred(:,i),(0:0.001:duration-0.001));
     end
 
     %Rounding
