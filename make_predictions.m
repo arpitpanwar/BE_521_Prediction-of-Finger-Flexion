@@ -16,8 +16,7 @@ function [predicted_dg] = make_predictions(test_ecog)
 % Load Model. The variable models contains weights for each person,
 % each channel, and each finger.
 
-load team_awesome_model.mat 
-
+load 'SavedModels.mat';
 
 % Predict using linear predictor for each subject
 %create cell array with one element for each subject
@@ -29,16 +28,13 @@ for subj = 1:3
     %get the testing ecog
     testset = test_ecog{subj}; 
     
-    %initialize the predicted dataglove matrix
-    yhat = zeros(size(testset,1),5);
+    sr = 1000;
     
-    %for each finger
-    for i = 1:5 
-        
-        %predict dg based on ECOG for each finger
-        yhat(:,i) = testset*models{subj}(:,i);
-        
-    end
-    predicted_dg{subj} = yhat;
+    duration = length(testset)/10^3;
+    
+    yhat_linreg = Prediction_LinearReg(mdl_lin_reg{subj},train_limits,testset,1000,duration);
+    
+    
+    predicted_dg{subj} = yhat_linreg;
 end
 
