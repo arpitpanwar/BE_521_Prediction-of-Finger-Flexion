@@ -1,10 +1,15 @@
-function [ pred_rounded ] = Prediction_LinearReg( weight_mat,train_limits,test_data,samplingRate,duration )
-
+function [ pred_rounded ] = Prediction_Ensemble( models,train_labels,test_data,samplingRate,duration )
+    
     wins = NumWins(length(test_data),samplingRate,0.1,0.05);
 
     featureMat = FeatureGeneration(test_data,wins,samplingRate);
-
-    pred = featureMat*weight_mat;
+    
+    pred = zeros([length(featureMat),5]);
+    
+    for i=1:5
+        pred(:,i) = predict(models{i},test_data);
+    end
+    
 
     % Spline function takes in the time that y occured and what time y should
     % occur
@@ -20,14 +25,15 @@ function [ pred_rounded ] = Prediction_LinearReg( weight_mat,train_limits,test_d
 
     %Setting limits
     for i=1:5
-        minimum = train_limits(i,1);
+        minimum = min(train_labels(:,i));
         pred_remove = find(pred_rounded < minimum);
         pred_rounded(pred_remove) = minimum;
 
-        maximum = train_limits(i,2);
+        maximum = max(train_labels(:,i));
         pred_remove = find(pred_rounded > maximum);
         pred_rounded(pred_remove) = maximum;
     end
+
 
 end
 
