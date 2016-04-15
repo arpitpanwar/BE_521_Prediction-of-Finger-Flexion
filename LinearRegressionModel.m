@@ -12,8 +12,10 @@ function [ weight_mat ] = LinearRegressionModel( train_ecog_data,train_labels,sa
     for i=1:5
         trainlabels_decimated(:,i) = decimate(train_labels(:,i),50);
     end
+    
+    train_labl_test = trainlabels_decimated;
 
-    trainlabels_decimated = trainlabels_decimated(1:end-1,:);
+    trainlabels_decimated = [train_labl_test(1:end-2,:);train_labl_test(length(trainlabels_decimated),:)];
 
     %Generating weight matrix
     weight_mat = (featureMat'*featureMat) \ (featureMat'*trainlabels_decimated); 
