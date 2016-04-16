@@ -15,9 +15,9 @@ function [ mdl_ensemble_learning,pred_ensemble ] = GenerateEnsembleLearning(  )
     session_sub3_test = IEEGSession('I521_A0014_D003','arpitpanwar','../arp_ieeglogin.bin');
     
     %% Subject 1 prediction
-    totalDuration = session_sub1_ecog.data.rawChannels(1).get_tsdetails.getDuration/10^6;
+    totalDuration = (session_sub1_ecog.data.rawChannels(1).get_tsdetails.getDuration/10^6)+0.001;
 
-    testDuration = session_sub1_test.data.rawChannels(1).get_tsdetails.getDuration/10^6;
+    testDuration = (session_sub1_test.data.rawChannels(1).get_tsdetails.getDuration/10^6)+0.001;
 
     sr = session_sub1_ecog.data.sampleRate;
 
