@@ -1,10 +1,10 @@
-function [ pred_rounded ] = Prediction_LogReg( weight_mat,train_limits,test_data,samplingRate,duration )
+function [ pred_rounded ] = Prediction_LogReg( weight_mat,train_limits,test_data,samplingRate,duration,windowSize,displ )
     
-    wins = NumWins(length(test_data),samplingRate,0.1,0.05);
+   wins = NumWins(length(test_data),samplingRate,windowSize,displ);
 
-    featureMat = FeatureGeneration(test_data,wins,samplingRate);
+    featureMat = FeatureGeneration(test_data,wins,samplingRate,windowSize,displ);
 
-    pred = mnrval(weight_mat,featureMat,ones([length(featureMat),1])*8);
+    pred = mnrval(weight_mat,featureMat);
     
    % pred = round(pred);
     % Spline function takes in the time that y occured and what time y should
@@ -20,15 +20,15 @@ function [ pred_rounded ] = Prediction_LogReg( weight_mat,train_limits,test_data
 %     pred_rounded = round(pred_splined);
     pred_rounded = pred_splined;
     %Setting limits
-    for i=1:5
-        minimum = train_limits(i,1);
-        pred_remove = find(pred_rounded < minimum);
-        pred_rounded(pred_remove) = minimum;
-
-        maximum = train_limits(i,2);
-        pred_remove = find(pred_rounded > maximum);
-        pred_rounded(pred_remove) = maximum;
-    end
+%     for i=1:5
+%         minimum = train_limits(i,1);
+%         pred_remove = find(pred_rounded < minimum);
+%         pred_rounded(pred_remove) = minimum;
+% 
+%         maximum = train_limits(i,2);
+%         pred_remove = find(pred_rounded > maximum);
+%         pred_rounded(pred_remove) = maximum;
+%     end
 
 
 end
