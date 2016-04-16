@@ -1,22 +1,34 @@
-function [ weight_mat ] = LinearRegressionModel( train_ecog_data,train_labels,samplingRate )
+function [ weight_mat ] = LinearRegressionModel( train_ecog_data,train_labels,samplingRate,windowSize,displ )
 
-    wins = NumWins(length(train_ecog_data),samplingRate,0.1,0.05);
+    wins = NumWins(length(train_ecog_data),samplingRate,windowSize,displ);
     
-    featureMat = FeatureGeneration(train_ecog_data,wins,samplingRate);
-
+    featureMat = FeatureGeneration(train_ecog_data,wins,samplingRate,windowSize,displ);
+    
     clearvars curr;
 
     %Decimate the training labels
-    trainlabels_decimated = zeros([int64(length(train_labels)/50),5]);
+    trainlabels_decimated = zeros([int64(length(train_labels)/(displ*10^3)),5]);
 
     for i=1:5
-        trainlabels_decimated(:,i) = decimate(train_labels(:,i),50);
+        trainlabels_decimated(:,i) = decimate(train_labels(:,i),displ*10^3);
     end
     
     train_labl_test = trainlabels_decimated;
 
     trainlabels_decimated = [train_labl_test(1:end-2,:);train_labl_test(length(trainlabels_decimated),:)];
-
+    
+%     weight_mat = zeros([size(featureMat,2),5]);
+%     
+%     for i=1:5
+%         c = zeros([100,1]);
+%         B = lasso(featureMat,trainlabels_decimated(:,i));
+%         for j=1:100
+%             c(j) = corr(featureMat*B(:,j),trainlabels_decimated(:,1));
+%         end
+%         weight_mat(:,i) = B(:,find(max(c)));
+%     end
+    
+    
     %Generating weight matrix
     weight_mat = (featureMat'*featureMat) \ (featureMat'*trainlabels_decimated); 
 
