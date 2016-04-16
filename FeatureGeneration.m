@@ -1,4 +1,4 @@
-function [ R ] = FeatureGeneration( input_mat,windows,samplingRate )
+function [ R ] = FeatureGeneration( input_mat,windows,samplingRate,windowsize,displ )
 
     numFeatures = 9;
     len = size(input_mat,2);
@@ -9,21 +9,21 @@ function [ R ] = FeatureGeneration( input_mat,windows,samplingRate )
     for i=0:len-1
         %Mean voltage in time domain
         curr = input_mat(:,i+1);
-        featureMat(:,i*numFeatures+1) = MovingWinFeats(curr,samplingRate,0.1,0.05,@(x)mean(x));
+        featureMat(:,i*numFeatures+1) = MovingWinFeats(curr,samplingRate,windowsize,displ,@(x)mean(x));
     
         % Converting in frequency domain
-        [s,w,~] = spectrogram(curr,100,50,[],2*samplingRate);
+        [s,w,~] = spectrogram(curr,windowsize*10^3,displ*10^3,[],2*samplingRate);
 
         %5-15 hz frequency
-        num1 = find(w>=5 & w<15);
+        num1 = find(w>=5 & w<=15);
         featureMat(1:length(s),i*numFeatures+2) =mean(abs(s(num1,:)),1)';
 
         %20-25 hz frequency
-        num1 = find(w>=20 & w<25);
+        num1 = find(w>=20 & w<=25);
         featureMat(1:length(s),i*numFeatures+3) = mean(abs(s(num1,:)),1)';
 
         %75-115 hz frequency
-        num1 = find(w>=75 & w<115);
+        num1 = find(w>=75 & w<=115);
         featureMat(1:length(s),i*numFeatures+4) = mean(abs(s(num1,:)),1)';
 
         %125-160 hz frequency
@@ -35,16 +35,25 @@ function [ R ] = FeatureGeneration( input_mat,windows,samplingRate )
         featureMat(1:length(s),i*numFeatures+6) = mean(abs(s(num1,:)),1)';
        
         %Line Length
-        featureMat(:,i*numFeatures+7) = MovingWinFeats(curr,samplingRate,0.1,0.05,@(x)LineLength(x));
+        featureMat(:,i*numFeatures+7) = MovingWinFeats(curr,samplingRate,windowsize,displ,@(x)LineLength(x));
         
         %Energy
-        featureMat(:,i*numFeatures+8) = MovingWinFeats(curr,samplingRate,0.1,0.05,@(x)Energy(x));
+        %featureMat(:,i*numFeatures+8) = MovingWinFeats(curr,samplingRate,0.1,0.05,@(x)Energy(x));
+        
+        %Variance
+        featureMat(:,i*numFeatures+8) = MovingWinFeats(curr,samplingRate,windowsize,displ,@(x)var(x));
         
         %Area
-        featureMat(:,i*numFeatures+9) = MovingWinFeats(curr,samplingRate,0.1,0.05,@(x)Area(x));
+        featureMat(:,i*numFeatures+9) = MovingWinFeats(curr,samplingRate,windowsize,displ,@(x)Area(x));
+        
+        %Bandpower
+        %featureMat(:,i*numFeatures+8) = MovingWinFeats(curr,samplingRate,windowsize,displ,@(x)bandpower(x));
 
+        
     end
-       
+    
+    
+    
     N = 3;
     R = zeros([length(featureMat),size(featureMat,2)*N]);
     
