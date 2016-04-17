@@ -13,10 +13,10 @@ function [ weight_mat ] = LinearRegressionModel( train_ecog_data,train_labels,sa
         trainlabels_decimated(:,i) = decimate(train_labels(:,i),displ*10^3);
     end
     
-    train_labl_test = trainlabels_decimated;
+   % train_labl_test = trainlabels_decimated;
 
-    trainlabels_decimated = [train_labl_test(1:end-2,:);train_labl_test(length(trainlabels_decimated),:)];
-    
+    %trainlabels_decimated = [train_labl_test(1:end-2,:);train_labl_test(length(trainlabels_decimated),:)];
+     trainlabels_decimated = trainlabels_decimated(1:end-1,:);
 %     weight_mat = zeros([size(featureMat,2),5]);
 %     
 %     for i=1:5

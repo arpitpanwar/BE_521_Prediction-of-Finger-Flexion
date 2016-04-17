@@ -53,7 +53,6 @@ function [ R ] = FeatureGeneration( input_mat,windows,samplingRate,windowsize,di
     end
     
     
-    
     N = 3;
     R = zeros([length(featureMat),size(featureMat,2)*N]);
     
@@ -66,7 +65,6 @@ function [ R ] = FeatureGeneration( input_mat,windows,samplingRate,windowsize,di
             end
         end
     end
- 
 
 end
 
