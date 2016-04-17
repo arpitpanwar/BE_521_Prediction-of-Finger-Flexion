@@ -1,6 +1,6 @@
 function [ R ] = FeatureGeneration( input_mat,windows,samplingRate,windowsize,displ )
 
-    numFeatures = 9;
+    numFeatures = 12;
     len = size(input_mat,2);
     featureMat = zeros([int64(windows),len*numFeatures]);
     
@@ -47,9 +47,14 @@ function [ R ] = FeatureGeneration( input_mat,windows,samplingRate,windowsize,di
         featureMat(:,i*numFeatures+9) = MovingWinFeats(curr,samplingRate,windowsize,displ,@(x)Area(x));
         
         %Bandpower
-        %featureMat(:,i*numFeatures+8) = MovingWinFeats(curr,samplingRate,windowsize,displ,@(x)bandpower(x));
+        featureMat(:,i*numFeatures+10) = MovingWinFeats(curr,samplingRate,windowsize,displ,@(x)bandpower(x,samplingRate,[1,60]));
 
-        
+         %Bandpower
+        featureMat(:,i*numFeatures+11) = MovingWinFeats(curr,samplingRate,windowsize,displ,@(x)bandpower(x,samplingRate,[60,100]));
+
+         %Bandpower
+        featureMat(:,i*numFeatures+12) = MovingWinFeats(curr,samplingRate,windowsize,displ,@(x)bandpower(x,samplingRate,[100,200]));
+
     end
     
     
