@@ -1,9 +1,15 @@
-function [ traindata,trainlabels,testdata,testDuration ] = GetDataForSubject1( )
+function [ traindata,trainlabels,testdata,testDuration ] = GetDataForSubject1(user)
 
-session_sub1_ecog = IEEGSession('I521_A0012_D001','arpitpanwar','../arp_ieeglogin.bin');
-session_sub1_dglov = IEEGSession('I521_A0012_D002','arpitpanwar','../arp_ieeglogin.bin');
-session_sub1_test = IEEGSession('I521_A0012_D003','arpitpanwar','../arp_ieeglogin.bin');
-
+if user == 1
+    session_sub1_ecog = IEEGSession('I521_A0012_D001','arpitpanwar','../arp_ieeglogin.bin');
+    session_sub1_dglov = IEEGSession('I521_A0012_D002','arpitpanwar','../arp_ieeglogin.bin');
+    session_sub1_test = IEEGSession('I521_A0012_D003','arpitpanwar','../arp_ieeglogin.bin');
+else
+    session_sub1_ecog = IEEGSession('I521_A0012_D001','jburrell','../jbu_ieeglogin.bin');
+    session_sub1_dglov = IEEGSession('I521_A0012_D002','jburrell','../jbu_ieeglogin.bin');
+    session_sub1_test = IEEGSession('I521_A0012_D003','jburrell','../jbu_ieeglogin.bin');
+end
+    
 totalDuration = (session_sub1_ecog.data.rawChannels(1).get_tsdetails.getDuration/10^6)+0.001;
 
 testDuration = (session_sub1_test.data.rawChannels(1).get_tsdetails.getDuration/10^6)+0.001;
