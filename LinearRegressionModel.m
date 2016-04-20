@@ -41,7 +41,7 @@ function [ weight_mat,chosenFeatures ] = LinearRegressionModel( train_ecog_data,
 %      ranks = [];
      for i=1:5
 %        [rnk,~] = relieff(featureMat,trainlabels_decimated(:,i),K);
-        features = [features , ranks(i,1:round(length(ranks(i,:))*1/50))];
+        features = [features , ranks(i,1:round(length(ranks(i,:))*1/45))];
 %        features = [features , rnk(1:round(length(rnk)*1/55))];
 %        ranks = [ranks;rnk];
      end
@@ -51,6 +51,8 @@ function [ weight_mat,chosenFeatures ] = LinearRegressionModel( train_ecog_data,
      chosenFeatures = unique(features);
      
      featureMat = featureMat(:,chosenFeatures);
+         featureMat = [ones([size(featureMat,1),1]),featureMat];
+
 %     weight_mat = zeros([size(featureMat,2),5]);
 %     
 %     for i=1:5

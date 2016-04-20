@@ -6,7 +6,8 @@ function [ pred_rounded ] = Prediction_LinearReg( weight_mat,train_limits,test_d
     featureMat = FeatureGeneration(test_data,wins,samplingRate,windowSize,displ);
 
     featureMat = featureMat(:,chosenFeatures);
-    
+        featureMat = [ones([size(featureMat,1),1]),featureMat];
+
     pred = featureMat*weight_mat;
     
    % pred = round(pred);

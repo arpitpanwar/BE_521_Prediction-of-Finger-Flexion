@@ -29,6 +29,9 @@ end
     testdata_ecog_sub2=[testdata_ecog_sub2(:,1:20),testdata_ecog_sub2(:,22:37),testdata_ecog_sub2(:,39:end)];
     
     testdata = Preprocess(testdata_ecog_sub2);
+    
+    save('Subject2_data.mat','testdata','trainlabels','traindata','testDuration');
+
 
 end
 

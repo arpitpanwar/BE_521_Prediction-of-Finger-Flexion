@@ -29,5 +29,7 @@ testdata_ecog_sub1 = session_sub1_test.data.getvalues(1:round(sr*testDuration),1
 testdata_ecog_sub1 = [testdata_ecog_sub1(:,1:54),testdata_ecog_sub1(:,56:end)];
 testdata = Preprocess(testdata_ecog_sub1);
 
+save('Subject1_data.mat','testdata','trainlabels','traindata','testDuration');
+
 end
 
