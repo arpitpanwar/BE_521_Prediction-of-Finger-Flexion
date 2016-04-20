@@ -52,13 +52,13 @@ function [ weight_mat,chosenFeatures ] = StepwiseRegressionModel(train_ecog_data
      
      featureMat = featureMat(:,chosenFeatures);
     
-    featureMat = [ones([size(featureMat,1),1]),featureMat];
+   % featureMat = [ones([size(featureMat,1),1]),featureMat];
  
 
     %Generating weight matrix
     weight_mat = zeros([size(featureMat,2),5]);
     for i=1:5
-        weight_mat(:,i) = stepwisefit(featureMat,trainlabels_decimated(:,i),'scale','on') ; 
+        weight_mat(:,i) = stepwisefit(featureMat,trainlabels_decimated(:,i),'penter',0.45) ; 
     end
 
 end

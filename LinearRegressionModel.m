@@ -9,13 +9,16 @@ function [ weight_mat,chosenFeatures ] = LinearRegressionModel( train_ecog_data,
     switch subject
         case 1
             load 'features_emp1_k15.mat';
-            load 'ranks_emp1_k15.mat';
+%            load 'ranks_emp1.mat';
+            divisor = 50;
         case 2
             load 'features_emp2_k15.mat';
-            load 'ranks_emp2_k15.mat';
+%            load 'ranks_emp2.mat';
+            divisor = 45;
         case 3
             load 'features_emp3_k15.mat';
-            load 'ranks_emp3_k15.mat';
+%            load 'ranks_emp3.mat';
+            divisor = 45;
     end
 
     clearvars curr;
@@ -36,17 +39,17 @@ function [ weight_mat,chosenFeatures ] = LinearRegressionModel( train_ecog_data,
      %fun = @(XT,YT,xt,yt)LinearRegressionForPrediction(XT,YT,xt,yt);
      
      disp 'Selecting features';
-%      K = 15;
+      K = 25;
       features = [];
-%      ranks = [];
+      ranks = [];
      for i=1:5
-%        [rnk,~] = relieff(featureMat,trainlabels_decimated(:,i),K);
-        features = [features , ranks(i,1:round(length(ranks(i,:))*1/45))];
-%        features = [features , rnk(1:round(length(rnk)*1/55))];
-%        ranks = [ranks;rnk];
+        [rnk,~] = relieff(featureMat,trainlabels_decimated(:,i),K);
+%        features = [features , ranks(i,1:round(length(ranks(i,:))*1/divisor))];
+        features = [features , rnk(1:round(length(rnk)*1/55))];
+        ranks = [ranks;rnk];
      end
          
-%     save(strcat('ranks',num2str(fix(clock)),'_k15.mat'),'ranks');
+     save(strcat('ranks_emp',num2str(subject),'_k',num2str(K),'.mat'),'ranks');
 
      chosenFeatures = unique(features);
      
