@@ -1,7 +1,7 @@
-function [ weights,predictions ] = GenerateRidgeRegression( traindata,trainlabels,sr,windowSize,displ,testdata,testDuration )
+function [ weights,predictions ] = GenerateRidgeRegression( traindata,trainlabels,sr,windowSize,displ,testdata,testDuration,subject )
     
 
-    weights = RidgeRegressionModel(traindata,trainlabels,sr,windowSize,displ);
+    [weights,chosenFeatures] = RidgeRegressionModel(traindata,trainlabels,sr,windowSize,displ,subject);
        
     train_limits = zeros([5,2]);
     
@@ -11,7 +11,7 @@ function [ weights,predictions ] = GenerateRidgeRegression( traindata,trainlabel
     end
 
     %Predicting
-    predictions = Prediction_Ridge(weights,train_limits,testdata,sr,testDuration,windowSize,displ);
+    predictions = Prediction_Ridge(weights,train_limits,testdata,sr,testDuration,windowSize,displ,chosenFeatures);
 
 
 end

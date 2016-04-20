@@ -3,20 +3,20 @@ function [ weight_mat,chosenFeatures ] = LinearRegressionModel( train_ecog_data,
     wins = NumWins(length(train_ecog_data),samplingRate,windowSize,displ);
     
     disp 'Generating feature matrix in linear regression model';
-     featureMat = FeatureGeneration(train_ecog_data,wins,samplingRate,windowSize,displ);
-     save(strcat('features',num2str(fix(clock)),'_k15.mat'),'featureMat');
+%      featureMat = FeatureGeneration(train_ecog_data,wins,samplingRate,windowSize,displ);
+%      save(strcat('features',num2str(fix(clock)),'_k15.mat'),'featureMat');
     
-%     switch subject
-%         case 1
-%             load 'features_emp1.mat';
-%             load 'ranks_emp1.mat';
-%         case 2
-%             load 'features_emp2.mat';
-%             load 'ranks_emp2.mat';
-%         case 3
-%             load 'features_emp3.mat';
-%             load 'ranks_emp3.mat';
-%     end
+    switch subject
+        case 1
+            load 'features_emp1_k15.mat';
+            load 'ranks_emp1_k15.mat';
+        case 2
+            load 'features_emp2_k15.mat';
+            load 'ranks_emp2_k15.mat';
+        case 3
+            load 'features_emp3_k15.mat';
+            load 'ranks_emp3_k15.mat';
+    end
 
     clearvars curr;
     
@@ -36,17 +36,17 @@ function [ weight_mat,chosenFeatures ] = LinearRegressionModel( train_ecog_data,
      %fun = @(XT,YT,xt,yt)LinearRegressionForPrediction(XT,YT,xt,yt);
      
      disp 'Selecting features';
-      K = 15;
+%      K = 15;
       features = [];
-      ranks = [];
+%      ranks = [];
      for i=1:5
-        [rnk,~] = relieff(featureMat,trainlabels_decimated(:,i),K);
-        %features = [features , ranks(i,1:round(length(ranks(i,:))*1/55))];
-        features = [features , rnk(1:round(length(rnk)*1/55))];
-        ranks = [ranks;rnk];
+%        [rnk,~] = relieff(featureMat,trainlabels_decimated(:,i),K);
+        features = [features , ranks(i,1:round(length(ranks(i,:))*1/50))];
+%        features = [features , rnk(1:round(length(rnk)*1/55))];
+%        ranks = [ranks;rnk];
      end
          
-     save(strcat('ranks',num2str(fix(clock)),'_k15.mat'),'ranks');
+%     save(strcat('ranks',num2str(fix(clock)),'_k15.mat'),'ranks');
 
      chosenFeatures = unique(features);
      
