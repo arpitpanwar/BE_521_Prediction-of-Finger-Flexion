@@ -1,6 +1,6 @@
-function [weights,predictions] = GenerateLinearRegression(traindata,trainlabels,sr,windowSize,displ,testdata,testDuration)
+function [weights,predictions] = GenerateLinearRegression(traindata,trainlabels,sr,windowSize,displ,testdata,testDuration,subject)
     
-    weights = LinearRegressionModel(traindata,trainlabels,sr,windowSize,displ);
+    [weights,chosenFeatures] = LinearRegressionModel(traindata,trainlabels,sr,windowSize,displ,subject);
        
     train_limits = zeros([5,2]);
     
@@ -10,6 +10,6 @@ function [weights,predictions] = GenerateLinearRegression(traindata,trainlabels,
     end
 
     %Predicting
-    predictions = Prediction_LinearReg(weights,train_limits,testdata,sr,testDuration,windowSize,displ);
+    predictions = Prediction_LinearReg(weights,train_limits,testdata,sr,testDuration,windowSize,displ,chosenFeatures);
     
 end

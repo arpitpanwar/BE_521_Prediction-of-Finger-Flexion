@@ -1,11 +1,8 @@
-function [ pred_rounded ] = Prediction_LinearReg( weight_mat,train_limits,test_data,samplingRate,duration,windowSize,displ,chosenFeatures )
-
+function [ pred_rounded ] = Prediction_Stepwise( weight_mat,train_limits,test_data,samplingRate,duration,windowSize,displ )
+    
     wins = NumWins(length(test_data),samplingRate,windowSize,displ);
 
-    disp 'Generating features while prediction';
     featureMat = FeatureGeneration(test_data,wins,samplingRate,windowSize,displ);
-
-    featureMat = featureMat(:,chosenFeatures);
     
     pred = featureMat*weight_mat;
     

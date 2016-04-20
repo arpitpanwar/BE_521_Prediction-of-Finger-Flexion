@@ -5,11 +5,11 @@ function [ featurevals ] = MovingWinFeats(x,fs,winLen,winDisp,featFn)
     values = cell(windowval,1);
     i=1;
     while windowval >0
-       values{i} = x(start:start+values_per_window);
+       values{i} = featFn(x(start:start+values_per_window));
        start = start+values_per_window;
        windowval = windowval-1;
        i=i+1;
     end
-   featurevals = cellfun(featFn,values);
+   featurevals = cell2mat(values);
 end
 
