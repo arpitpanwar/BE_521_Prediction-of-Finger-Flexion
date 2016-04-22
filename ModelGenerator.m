@@ -5,12 +5,34 @@ windowSize = 0.08;
 displ = 0.04;
 sr = 10^3;
 user = 1;
+getdata = 1;
 %% Generate predictions for subject 1
 
 %Get data
-[traindata_sub1,trainlabels_sub1,testdata_sub1,testduration_sub1] = GetDataForSubject1(user);
+disp '  '
+disp ' -- '
+disp 'Generate predictions for subject 1'
 
+if getdata == 1
+    [traindata_sub1,trainlabels_sub1,testdata_sub1,testduration_sub1] = GetDataForSubject1(user);
+end
+
+% electrode reduction
+[weights_sub1, reduced_feats_sub1]= GenerateElectrodeReduction(traindata_sub1,trainlabels_sub1,sr,windowSize,displ);
+
+% Testing electrode reduction using 100 ms nonoverlapping windows as
+% described in sanchez paper
+
+% windowSize = .1;
+% disp = .1;
+% [weights_sub1b, reduced_feats_sub1b]= GenerateElectrodeReduction(traindata_sub1,trainlabels_sub1,sr,windowSize,displ);
+
+% traindata_sub1 = traindata_sub1(:,weights_sub1);
+% testdata_sub1 = reduced_test_sub1;
+
+%prefilter
 %[filteredlabels,filterWeights] = PreFilter(trainlabels_sub1);
+
 %linear regression
 [weights_sub1,pred_linreg_sub1]= GenerateLinearRegression(traindata_sub1,trainlabels_sub1,sr,windowSize,displ,testdata_sub1,testduration_sub1,1);
 
@@ -33,7 +55,20 @@ clearvars traindata_sub1 trainlabels_sub1 testdata_sub1 testduration_sub1;
 %% Generate predictions for subject 2
 
 %Get data
-[traindata_sub2,trainlabels_sub2,testdata_sub2,testduration_sub2] = GetDataForSubject2(user);
+disp '  '
+disp ' -- '
+disp 'Generate predictions for subject 2'
+
+if getdata == 1
+    [traindata_sub2,trainlabels_sub2,testdata_sub2,testduration_sub2] = GetDataForSubject2(user);
+end
+
+%electrode reduction
+[weights_sub2, reduced_feats_sub2]= GenerateElectrodeReduction(traindata_sub2,trainlabels_sub2,sr,windowSize,displ);
+
+% traindata_sub2 = traindata_sub2(:,weights_sub2);
+% testdata_sub2 = reduced_test_sub2;
+
 
 %linear regression
 [weights_sub2,pred_linreg_sub2]= GenerateLinearRegression(traindata_sub2,trainlabels_sub2,sr,windowSize,displ,testdata_sub2,testduration_sub2,2);
@@ -58,7 +93,21 @@ clearvars traindata_sub2 trainlabels_sub2 testdata_sub2 testduration_sub2;
 
 %% Generate predictions for subject 3
 %Get data
-[traindata_sub3,trainlabels_sub3,testdata_sub3,testduration_sub3] = GetDataForSubject3(user);
+
+disp '  '
+disp ' -- '
+disp 'Generate predictions for subject 3'
+
+if getdata==1
+    [traindata_sub3,trainlabels_sub3,testdata_sub3,testduration_sub3] = GetDataForSubject3(user);
+end
+
+% Electrode reduction
+[weights_sub3, reduced_feats_sub3]= GenerateElectrodeReduction(traindata_sub3,trainlabels_sub3,sr,windowSize,displ);
+
+
+% traindata_sub3 = traindata_sub2(:,weights_sub3);
+% testdata_sub3 = reduced_test_sub2;
 
 %linear regression
 [weights_sub3,pred_linreg_sub3]= GenerateLinearRegression(traindata_sub3,trainlabels_sub3,sr,windowSize,displ,testdata_sub3,testduration_sub3,3);
