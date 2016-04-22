@@ -80,8 +80,32 @@ function [ weighted_electrodes, chosenElectrodeFeatures] = GenerateElectrodeRedu
         save(strcat('electrodeFeatures',num2str(i),'_-_',num2str(fix(clock)),'_k15.mat'),'chosenElectrodeFeatures');
 
     end
+    
+new_electrodes = cell(1);
+numFeatures = 9;
+numElectrodeFeatures = 3;
 
-electrode_predictions = featureMat * weighted_features_without_relieff
-weighted_electrodes = weighted_features_without_relieff
+history = 3;
+red_featuresMat = zeros(7749, 61 * numElectrodeFeatures * history);
+for i = 1:5
+    new_electrodes{i} = floor(find(chosenElectrodeFeatures(:,i))/numElectrodeFeatures)+1;
+    feature_reduction{i} = new_electrode{i} * numFeatures * numElectrodeFeatures
+  %  red_featuresMat{i} = fullfeatureMat(:, floor((new_electrodes(i}-1) * numFeatures * numElectrodeFeatures+1:floor((new_electrodes{i})*9));
+    red_featuresMat{i} = fullfeatureMat(:, floor((new_electrodes{i}-1) * numFeatures * numElectrodeFeatures+1)));
+
+end
+
+for i = 1:5
+red_featuresMat{i} = fullfeatureMat(:,floor((new_electrodes{i}-1) * numFeatures * numElectrodeFeatures+1));
+end
+
+traindata_sub1_finger1 = traindata_sub1(:,new_electrodes{1});
+traindata_sub1_finger2 = traindata_sub1(:,new_electrodes{2});
+traindata_sub1_finger3 = traindata_sub1(:,new_electrodes{3});
+traindata_sub1_finger4 = traindata_sub1(:,new_electrodes{4});
+traindata_sub1_finger5 = traindata_sub1(:,new_electrodes{5});
+
+
+electrode_features = elect
 end
 

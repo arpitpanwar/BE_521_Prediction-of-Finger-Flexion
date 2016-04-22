@@ -28,7 +28,6 @@ function [ R ] = ElectrodeReduction(input_mat,windows,samplingRate,windowsize,di
 
     end
     save(strcat('features_BP_nohistoryA',num2str(fix(clock)),'_k15.mat'),'featureMat');
-
     R = featureMat;
 %     N = 3;
 %     R = zeros([length(featureMat),size(featureMat,2)*N]);
