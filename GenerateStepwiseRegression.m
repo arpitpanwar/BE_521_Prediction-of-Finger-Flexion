@@ -1,6 +1,6 @@
-function [ weights,predictions ] = GenerateStepwiseRegression( traindata,trainlabels,sr,windowSize,displ,testdata,testDuration )
+function [ weights,predictions ] = GenerateStepwiseRegression( traindata,trainlabels,sr,windowSize,displ,testdata,testDuration,subject )
     
-    weights = StepwiseRegressionModel(traindata,trainlabels,sr,windowSize,displ);
+    [weights,chosenFeatures] = StepwiseRegressionModel(traindata,trainlabels,sr,windowSize,displ,subject);
        
     train_limits = zeros([5,2]);
     
@@ -10,8 +10,7 @@ function [ weights,predictions ] = GenerateStepwiseRegression( traindata,trainla
     end
 
     %Predicting
-    predictions = Prediction_Stepwise(weights,train_limits,testdata,sr,testDuration,windowSize,displ);
-
+    predictions = Prediction_Stepwise(weights,train_limits,testdata,sr,testDuration,windowSize,displ,chosenFeatures);
 
 end
 

@@ -41,7 +41,7 @@ function [ weight_mat,chosenFeatures ] = RidgeRegressionModel( train_ecog_data,t
 %      ranks = [];
      for i=1:5
 %        [rnk,~] = relieff(featureMat,trainlabels_decimated(:,i),K);
-        features = [features , ranks(i,1:round(length(ranks(i,:))*1/40))];
+        features = [features , ranks(i,1:round(length(ranks(i,:))*1/45))];
 %        features = [features , rnk(1:round(length(rnk)*1/55))];
 %        ranks = [ranks;rnk];
      end
