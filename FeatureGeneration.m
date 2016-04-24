@@ -1,6 +1,6 @@
-function [ R ] = FeatureGeneration( input_mat,windows,samplingRate,windowsize,displ )
+function [ featureMat ] = FeatureGeneration( input_mat,windows,samplingRate,windowsize,displ )
 
-    numFeatures = 9;
+    numFeatures = 10;
     len = size(input_mat,2);
     featureMat = zeros([int64(windows),len*numFeatures]);
     
@@ -44,40 +44,30 @@ function [ R ] = FeatureGeneration( input_mat,windows,samplingRate,windowsize,di
         featureMat(:,i*numFeatures+(mod(counter,numFeatures))) = MovingWinFeats(curr,samplingRate,windowsize,displ,@(x)LineLength(x));
         counter = counter+1;
         %Energy
-        %featureMat(:,i*numFeatures+8) = MovingWinFeats(curr,samplingRate,0.1,0.05,@(x)Energy(x));
-        
+        featureMat(:,i*numFeatures+(mod(counter,numFeatures))) = MovingWinFeats(curr,samplingRate,windowsize,displ,@(x)Energy(x));
+        counter = counter+1;
         %Variance
         featureMat(:,i*numFeatures+(mod(counter,numFeatures))) = MovingWinFeats(curr,samplingRate,windowsize,displ,@(x)var(x));
-
+    
+        counter = counter+1;
         %Area
-        featureMat(:,i*numFeatures+numFeatures) = MovingWinFeats(curr,samplingRate,windowsize,displ,@(x)Area(x));
+        featureMat(:,i*numFeatures+(mod(counter,numFeatures))) = MovingWinFeats(curr,samplingRate,windowsize,displ,@(x)Area(x));
         
+        counter = counter+1;
         %Bandpower
-        %featureMat(:,i*numFeatures+(mod(counter,numFeatures))) = MovingWinFeats(curr,samplingRate,windowsize,displ,@(x)bandpower(x,samplingRate,[1,60]));
+        featureMat(:,i*numFeatures+(mod(counter,numFeatures))) = MovingWinFeats(curr,samplingRate,windowsize,displ,@(x)bandpower(x,samplingRate,[1,60]));
 
-        %counter=counter+1;
+        counter=counter+1;
          %Bandpower
-        %featureMat(:,i*numFeatures+(mod(counter,numFeatures))) = MovingWinFeats(curr,samplingRate,windowsize,displ,@(x)bandpower(x,samplingRate,[60,100]));
+        featureMat(:,i*numFeatures+(mod(counter,numFeatures))) = MovingWinFeats(curr,samplingRate,windowsize,displ,@(x)bandpower(x,samplingRate,[60,100]));
         
-        %counter = counter+1;
+        counter = counter+1;
         
          %Bandpower
-        %featureMat(:,i*numFeatures+numFeatures) = MovingWinFeats(curr,samplingRate,windowsize,displ,@(x)bandpower(x,samplingRate,[100,200]));
+        featureMat(:,i*numFeatures+numFeatures) = MovingWinFeats(curr,samplingRate,windowsize,displ,@(x)bandpower(x,samplingRate,[100,200]));
 
     end
     
-    N = 3;
-    R = zeros([length(featureMat),size(featureMat,2)*N]);
-    
-    for i=1:size(featureMat,1)
-        for j=0:size(featureMat,2)-1
-            if i<=N
-                R(i,j*N+1:j*N+N) = [zeros([1,N-i]),featureMat(1:i,j+1)'];
-            else
-                    R(i,j*N+1:j*N+N) = featureMat(i-N+1:i,j+1)';
-            end
-        end
-    end
 
 end
 

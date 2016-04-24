@@ -1,9 +1,13 @@
-function [ pred_rounded ] = Prediction_SVM( models,train_limits,test_data,samplingRate,duration,windowSize,displ )
+function [ pred_rounded ] = Prediction_SVM( models,train_limits,test_data,samplingRate,duration,windowSize,displ,chosenFeatures )
 
     wins = NumWins(length(test_data),samplingRate,windowSize,displ);
 
     featureMat = FeatureGeneration(test_data,wins,samplingRate,windowSize,displ);
 
+    featureMat = featureMat(:,chosenFeatures);
+    
+    disp 'Predicting SVM';
+    
     pred = zeros([length(featureMat),size(models,1)]);
     
     for i=1:size(pred,2)

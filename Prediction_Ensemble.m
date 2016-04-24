@@ -1,35 +1,42 @@
-function [ pred_rounded ] = Prediction_Ensemble( models,train_labels,test_data,samplingRate,duration )
+function [ pred_rounded ] = Prediction_Ensemble(models,train_limits,test_data,samplingRate,duration,windowSize,displ,chosenFeatures )
     
-    wins = NumWins(length(test_data),samplingRate,0.1,0.05);
+    wins = NumWins(length(test_data),samplingRate,windowSize,displ);
 
-    featureMat = FeatureGeneration(test_data,wins,samplingRate);
+    featureMat = FeatureGeneration(test_data,wins,samplingRate,windowSize,displ);
+   
+    
+    featureMat = featureMat(:,chosenFeatures);
+    
+    disp 'Predicting Ensemble';
     
     pred = zeros([length(featureMat),5]);
     
     for i=1:5
-        pred(:,i) = predict(models{i},test_data);
+        pred(:,i) = predict(models{i},featureMat);
     end
     
 
+   % pred = round(pred);
     % Spline function takes in the time that y occured and what time y should
     % occur
     pred_splined = zeros([length(test_data),5]);
     len = length(pred);
-    stepval = (309.9)/len;
+    stepval = (duration)/len;
     for i=1:5
-        pred_splined(:,i) = spline((0:stepval:309.9-stepval),pred(:,i),(0:0.001:duration-0.001));
+        pred_splined(:,i) = spline((stepval:stepval:duration),pred(:,i),(0.001:0.001:duration));
     end
 
     %Rounding
-    pred_rounded = round(pred_splined);
-
+%     %Rounding
+%     pred_rounded = round(pred_splined);
+    pred_rounded = pred_splined;
     %Setting limits
     for i=1:5
-        minimum = min(train_labels(:,i));
+        minimum = train_limits(i,1);
         pred_remove = find(pred_rounded < minimum);
         pred_rounded(pred_remove) = minimum;
 
-        maximum = max(train_labels(:,i));
+        maximum = train_limits(i,2);
         pred_remove = find(pred_rounded > maximum);
         pred_rounded(pred_remove) = maximum;
     end

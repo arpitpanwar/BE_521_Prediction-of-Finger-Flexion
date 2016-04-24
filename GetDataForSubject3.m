@@ -28,7 +28,7 @@ function [ traindata,trainlabels,testdata,testDuration ] = GetDataForSubject3(us
 %     
 %     save('Subject3_data.mat','testdata','trainlabels','traindata','testDuration');
 
-load 'Subject3_data.mat';
+    load 'Subject3_data.mat';
 
 end
 

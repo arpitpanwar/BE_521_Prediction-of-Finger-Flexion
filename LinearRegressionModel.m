@@ -1,24 +1,25 @@
-function [ weight_mat,chosenFeatures ] = LinearRegressionModel( train_ecog_data,train_labels,samplingRate,windowSize,displ,subject )
+function [ weight_mat,chosenFeatures ] = LinearRegressionModel( train_ecog_data, ...
+                train_labels,samplingRate,windowSize,displ,subject,history )
 
     wins = NumWins(length(train_ecog_data),samplingRate,windowSize,displ);
     
     disp 'Generating feature matrix in linear regression model';
 %      featureMat = FeatureGeneration(train_ecog_data,wins,samplingRate,windowSize,displ);
-%      save(strcat('features',num2str(fix(clock)),'_k15.mat'),'featureMat');
+%      save(strcat('features_emp',num2str(subject),'_k15.mat'),'featureMat');
     
     switch subject
         case 1
-            load 'features_emp1_k15.mat';
-%            load 'ranks_emp1.mat';
-            divisor = 50;
+           load 'features_emp1_k15.mat';
+           load('ranks_emp1_k15.mat');
+            divisor = 36;
         case 2
-            load 'features_emp2_k15.mat';
-%            load 'ranks_emp2.mat';
-            divisor = 45;
+           load 'features_emp2_k15.mat';
+           load('ranks_emp2_k15.mat');
+            divisor = 18;
         case 3
-            load 'features_emp3_k15.mat';
-%            load 'ranks_emp3.mat';
-            divisor = 45;
+           load 'features_emp3_k15.mat';
+           load('ranks_emp3_k15.mat');
+            divisor = 43;
     end
 
     clearvars curr;
@@ -39,23 +40,29 @@ function [ weight_mat,chosenFeatures ] = LinearRegressionModel( train_ecog_data,
      %fun = @(XT,YT,xt,yt)LinearRegressionForPrediction(XT,YT,xt,yt);
      
      disp 'Selecting features';
-      K = 25;
-      features = [];
-      ranks = [];
+%     K = 15;
+     features = [];
+%     ranks = [];
      for i=1:5
-        [rnk,~] = relieff(featureMat,trainlabels_decimated(:,i),K);
-%        features = [features , ranks(i,1:round(length(ranks(i,:))*1/divisor))];
-        features = [features , rnk(1:round(length(rnk)*1/55))];
-        ranks = [ranks;rnk];
+%       [rnk,~] = relieff(featureMat,trainlabels_decimated(:,i),K);
+        features = [features , ranks(i,1:round(length(ranks(i,:))*1/divisor))];
+%       features = [features , rnk(1:round(length(rnk)*1/divisor))];
+%       ranks = [ranks;rnk];
      end
          
-     save(strcat('ranks_emp',num2str(subject),'_k',num2str(K),'.mat'),'ranks');
+%     save(strcat('ranks_emp',num2str(subject),'_k',num2str(K),'.mat'),'ranks');
 
      chosenFeatures = unique(features);
      
      featureMat = featureMat(:,chosenFeatures);
-         featureMat = [ones([size(featureMat,1),1]),featureMat];
-
+     
+     disp 'Generating feature history';
+     
+     featureMat = FeatureHistoryGeneration( featureMat,history );
+     
+     featureMat = [ones([size(featureMat,1),1]),featureMat];
+    
+     %trainlabels_decimated = round(trainlabels_decimated);
 %     weight_mat = zeros([size(featureMat,2),5]);
 %     
 %     for i=1:5
