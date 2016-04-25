@@ -13,6 +13,5 @@ function [ R ] = FeatureHistoryGeneration( featureMat,history )
         end
     end
 
-
 end
 

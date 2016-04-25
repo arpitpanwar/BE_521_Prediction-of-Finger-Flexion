@@ -13,6 +13,6 @@ function [weights,predictions] = GenerateLinearRegression(traindata, ...
 
     %Predicting
     predictions = Prediction_LinearReg(weights,train_limits,testdata,...
-            sr,testDuration,windowSize,displ,chosenFeatures,history);
+            sr,testDuration,windowSize,displ,chosenFeatures,history,subject);
     
 end

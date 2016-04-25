@@ -12,14 +12,15 @@ user = 1;
 
 %[filteredlabels,filterWeights] = PreFilter(trainlabels_sub1);
 %linear regression
-[weights_sub1,pred_linreg_sub1]= GenerateLinearRegression(traindata_sub1,...
-    trainlabels_sub1,sr,windowSize,displ,testdata_sub1,testduration_sub1,1,15);
+%[weights_sub1,pred_linreg_sub1]= GenerateLinearRegression(traindata_sub1,...
+%    trainlabels_sub1,sr,windowSize,displ,testdata_sub1,testduration_sub1,1,15);
 
 %SVM
 %[models_sub1,pred_svm_sub1]= GenerateSVM(traindata_sub1,trainlabels_sub1,sr,windowSize,displ,testdata_sub1,testduration_sub1,1);
 
 %Ridge
-%[weights_sub1,pred_ridreg_sub1]= GenerateRidgeRegression(traindata_sub1,trainlabels_sub1,sr,windowSize,displ,testdata_sub1,testduration_sub1,1);
+[weights_sub1,pred_ridreg_sub1]= GenerateRidgeRegression(traindata_sub1,...
+    trainlabels_sub1,sr,windowSize,displ,testdata_sub1,testduration_sub1,1,15);
 
 %Stepwise
 %[weights_sub1,pred_stepreg_sub1]= GenerateStepwiseRegression(traindata_sub1,trainlabels_sub1,sr,windowSize,displ,testdata_sub1,testduration_sub1,1);
@@ -31,7 +32,7 @@ user = 1;
 %[models_sub1,pred_ensem_sub1]= GenerateEnsembleLearning(traindata_sub1,trainlabels_sub1,sr,windowSize,displ,testdata_sub1,testduration_sub1,1);
 
 
-pred_sub1 = pred_linreg_sub1;%.* pred_logreg_sub1;
+pred_sub1 = pred_ridreg_sub1;%.* pred_logreg_sub1;
 
 clearvars traindata_sub1 trainlabels_sub1 testdata_sub1 testduration_sub1;
 
@@ -41,14 +42,16 @@ clearvars traindata_sub1 trainlabels_sub1 testdata_sub1 testduration_sub1;
 [traindata_sub2,trainlabels_sub2,testdata_sub2,testduration_sub2] = GetDataForSubject2(user);
 
 %linear regression
-[weights_sub2,pred_linreg_sub2]= GenerateLinearRegression(traindata_sub2,...
-    trainlabels_sub2,sr,windowSize,displ,testdata_sub2,testduration_sub2,2,15);
+%[weights_sub2,pred_linreg_sub2]= GenerateLinearRegression(traindata_sub2,...
+%    trainlabels_sub2,sr,windowSize,displ,testdata_sub2,testduration_sub2,2,15);
 
 %SVM
 %[models_sub2,pred_svm_sub2]= GenerateSVM(traindata_sub2,trainlabels_sub2,sr,windowSize,displ,testdata_sub2,testduration_sub2,2);
 
 %Ridge
-%[weights_sub2,pred_ridreg_sub2]= GenerateRidgeRegression(traindata_sub2,trainlabels_sub2,sr,windowSize,displ,testdata_sub2,testduration_sub2,2);
+[weights_sub2,pred_ridreg_sub2]= ...
+GenerateRidgeRegression(traindata_sub2,...
+    trainlabels_sub2,sr,windowSize,displ,testdata_sub2,testduration_sub2,2,15);
 
 %Stepwise
 %[weights_sub2,pred_stepreg_sub2]= GenerateStepwiseRegression(traindata_sub2,trainlabels_sub2,sr,windowSize,displ,testdata_sub2,testduration_sub2,2);
@@ -59,7 +62,7 @@ clearvars traindata_sub1 trainlabels_sub1 testdata_sub1 testduration_sub1;
 %Ensemble Learning
 %[models_sub2,pred_ensem_sub2]= GenerateEnsembleLearning(traindata_sub2,trainlabels_sub2,sr,windowSize,displ,testdata_sub2,testduration_sub2,2);
 
-pred_sub2 = pred_linreg_sub2;%.* pred_logreg_sub2;
+pred_sub2 = pred_ridreg_sub2;%.* pred_logreg_sub2;
 
 
 clearvars traindata_sub2 trainlabels_sub2 testdata_sub2 testduration_sub2;
@@ -69,14 +72,16 @@ clearvars traindata_sub2 trainlabels_sub2 testdata_sub2 testduration_sub2;
 [traindata_sub3,trainlabels_sub3,testdata_sub3,testduration_sub3] = GetDataForSubject3(user);
 
 %linear regression
-[weights_sub3,pred_linreg_sub3]= GenerateLinearRegression(traindata_sub3,...
-    trainlabels_sub3,sr,windowSize,displ,testdata_sub3,testduration_sub3,3,25);
+% [weights_sub3,pred_linreg_sub3]= GenerateLinearRegression(traindata_sub3,...
+%    trainlabels_sub3,sr,windowSize,displ,testdata_sub3,testduration_sub3,3,20);
 
 %SVM
 %[models_sub3,pred_svm_sub3]= GenerateSVM(traindata_sub3,trainlabels_sub3,sr,windowSize,displ,testdata_sub3,testduration_sub3,3);
 
 %Ridge
-%[weights_sub3,pred_ridreg_sub3]= GenerateRidgeRegression(traindata_sub3,trainlabels_sub3,sr,windowSize,displ,testdata_sub3,testduration_sub3,3);
+[weights_sub3,pred_ridreg_sub3]= ...
+GenerateRidgeRegression(traindata_sub3,...
+    trainlabels_sub3,sr,windowSize,displ,testdata_sub3,testduration_sub3,3,20);
 
 %Stepwise
 %[weights_sub3,pred_stepreg_sub3]= GenerateStepwiseRegression(traindata_sub3,trainlabels_sub3,sr,windowSize,displ,testdata_sub3,testduration_sub3,3);
@@ -88,7 +93,7 @@ clearvars traindata_sub2 trainlabels_sub2 testdata_sub2 testduration_sub2;
 %Ensemble Learning
 %[model_sub3,pred_ensem_sub3]= GenerateEnsembleLearning(traindata_sub3,trainlabels_sub3,sr,windowSize,displ,testdata_sub3,testduration_sub3,3);
 
-pred_sub3 = pred_linreg_sub3;%.* pred_logreg_sub3;
+pred_sub3 = pred_ridreg_sub3;%.* pred_logreg_sub3;
 
 clearvars traindata_sub3 trainlabels_sub3 testdata_sub3 testduration_sub3;
 
@@ -101,4 +106,4 @@ predicted_dg{1} = pred_sub1;
 predicted_dg{2} = pred_sub2;
 predicted_dg{3} = pred_sub3;
 
-save('LeaderboardPrediction_filtering.mat','predicted_dg');
+save('LeaderboardPrediction_ridgefiltering.mat','predicted_dg');

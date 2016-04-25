@@ -9,17 +9,17 @@ function [ weight_mat,chosenFeatures ] = LinearRegressionModel( train_ecog_data,
     
     switch subject
         case 1
-           load 'features_emp1_k15.mat';
-           load('ranks_emp1_k15.mat');
-            divisor = 36;
-        case 2
-           load 'features_emp2_k15.mat';
-           load('ranks_emp2_k15.mat');
-            divisor = 18;
-        case 3
-           load 'features_emp3_k15.mat';
-           load('ranks_emp3_k15.mat');
+          load 'features_emp1_k15.mat';
+          load('ranks_emp1_k15.mat');
             divisor = 43;
+        case 2
+          load 'features_emp2_k15.mat';
+          load('ranks_emp2_k15.mat');
+            divisor = 20;
+        case 3
+          load 'features_emp3_k15.mat';
+          load('ranks_emp3_k15.mat');
+            divisor = 60;
     end
 
     clearvars curr;
@@ -40,9 +40,9 @@ function [ weight_mat,chosenFeatures ] = LinearRegressionModel( train_ecog_data,
      %fun = @(XT,YT,xt,yt)LinearRegressionForPrediction(XT,YT,xt,yt);
      
      disp 'Selecting features';
-%     K = 15;
+%    K = 15;
      features = [];
-%     ranks = [];
+%    ranks = [];
      for i=1:5
 %       [rnk,~] = relieff(featureMat,trainlabels_decimated(:,i),K);
         features = [features , ranks(i,1:round(length(ranks(i,:))*1/divisor))];
