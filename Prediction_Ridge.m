@@ -4,19 +4,19 @@ function [ pred_rounded ] = Prediction_Ridge( weight_mat,train_limits,...
  wins = NumWins(length(test_data),samplingRate,windowSize,displ);
 
     disp 'Generating features while prediction';
-%     featureMat = FeatureGeneration(test_data,wins,samplingRate,windowSize,displ);
-%     save(strcat('Testing_features',num2str(clock)),'featureMat');
+    featureMat = FeatureGeneration(test_data,wins,samplingRate,windowSize,displ);
+    save(strcat('Testing_features_sub',num2str(subject),'.mat'),'featureMat');
     
-    switch subject
-    
-        case 1
-            load('Testing_features_sub1.mat');
-        case 2 
-            load('Testing_features_sub2.mat');
-        case 3
-            load('Testing_features_sub3.mat');
-        
-    end
+%     switch subject
+%     
+%         case 1
+%             load('Testing_features_sub1.mat');
+%         case 2 
+%             load('Testing_features_sub2.mat');
+%         case 3
+%             load('Testing_features_sub3.mat');
+%         
+%     end
         
     featureMat = featureMat(:,chosenFeatures);
     featureMat = FeatureHistoryGeneration( featureMat,history );
