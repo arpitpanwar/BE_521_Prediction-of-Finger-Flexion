@@ -1,19 +1,8 @@
-function [ pred_rounded ] = Prediction_LogReg( weight_mat,train_limits,test_data,samplingRate,~,windowSize,displ,chosenFeatures,subject )
-    testing=0;
-    duration = length(test_data)/1000;
-    if duration ~= 310
-        testing = 1;
-    end
-        disp(strcat('Generating features for prediction:',num2str(subject)));
-        file = strcat('logreg_electrodes_movement_pred_featureMat_','_subject_',num2str(subject),'_',num2str(testing),'v8.mat');
-        if exist(file,'file')
-            load(file);
-        else
-            wins = NumWins(length(test_data),samplingRate,windowSize,displ);
-            
-            featureMat = FeatureGeneration(test_data,wins,samplingRate,windowSize,displ);
-            save(strcat('logreg_electrodes_movement_pred_featureMat',num2str(testing),'_subject_',num2str(subject),'_',num2str(testing),'v1.mat'), 'featureMat');
-        end
+function [ pred_rounded ] = Prediction_LogReg( weight_mat,train_limits,test_data,samplingRate,duration,windowSize,displ,chosenFeatures )
+    
+    wins = NumWins(length(test_data),samplingRate,windowSize,displ);
+
+    featureMat = FeatureGeneration(test_data,wins,samplingRate,windowSize,displ);
     
     featureMat = featureMat(:,chosenFeatures);
     

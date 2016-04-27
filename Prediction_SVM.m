@@ -1,21 +1,19 @@
-function [ pred_rounded ] = Prediction_SVM( models,train_limits,test_data,samplingRate,duration,windowSize,displ)
-    testing=0;
-    duration = length(test_data)/1000;
-    if duration ~= 310
-        testing = 1;
-    end
-        disp(strcat('Generating features for prediction:',num2str(subject)));
-        file = strcat('predict_SVM_movement_featureMat_',num2str(testing),'_subject_',num2str(subject),'_',num2str(testing),'v1.mat');
-        if exist(file,'file')
-            load(file);
-        else
-            wins = NumWins(length(test_data),samplingRate,windowSize,displ);            
-            featureMat = FeatureGeneration(test_data,wins,samplingRate,windowSize,displ);
-            save(strcat('predict_SVM_movement_featureMat_',num2str(testing),'_subject_',num2str(subject),'_',num2str(testing),'v1.mat'), 'featureMat');
-        end
+function [ pred_rounded ] = Prediction_SVM( models,train_limits,test_data,samplingRate,duration,windowSize,displ,chosenFeatures )
+
+    wins = NumWins(length(test_data),samplingRate,windowSize,displ);
+
+    featureMat = FeatureGeneration(test_data,wins,samplingRate,windowSize,displ);
+
+    featureMat = featureMat(:,chosenFeatures);
     
-    for i=1:size(pred,2)       
-        pred(:,i) = predict(models{i},featureMat);        
+    disp 'Predicting SVM';
+    
+    pred = zeros([length(featureMat),size(models,1)]);
+    
+    for i=1:size(pred,2)
+       
+        pred(:,i) = predict(models{i},featureMat);
+        
     end
     
    % pred = round(pred);

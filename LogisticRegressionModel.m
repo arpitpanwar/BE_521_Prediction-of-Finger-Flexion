@@ -1,29 +1,24 @@
-function [ weight_mat,chosenFeatures, featureMat, ranks ] = LogisticRegressionModel( train_ecog_data,train_labels,samplingRate,windowSize,displ,subject )
-
-        wins = NumWins(length(train_ecog_data),samplingRate,windowSize,displ);
-
-        disp 'Generating feature matrix in logistic regression model';
-   
-    if exist(strcat('trainfeatures_movement_subject_',num2str(subject),'v1.mat'),'file')
-        load(strcat('trainfeatures_movement_subject_',num2str(subject),'v1.mat'));
-    else
-        featureMat = FeatureGeneration(train_ecog_data,wins,samplingRate,windowSize,displ);
-        save(strcat('trainfeatures_movement_subject_',num2str(subject),'v1.mat'),'featureMat');
-
-    end
+function [ weight_mat,chosenFeatures ] = LogisticRegressionModel( train_ecog_data,train_labels,samplingRate,windowSize,displ,subject )
+    
+   wins = NumWins(length(train_ecog_data),samplingRate,windowSize,displ);
+    
+    disp 'Generating feature matrix in logistic regression model';
+      featureMat = FeatureGenerationReduced(train_ecog_data,wins,samplingRate,windowSize,displ);
+      save(strcat('features',num2str(fix(clock)),'_k15.mat'),'featureMat');
+    
     switch subject
         case 1
-                %load 'features_emp1_k15.mat';
-                %load 'ranks_emp1_k15.mat';
-                divisor = 45;
-            case 2
-               % load 'features_emp2_k15.mat';
-               % load 'ranks_emp2_k15.mat';
-                divisor = 40;
-            case 3
-                %load 'features_emp3_k15.mat';
-                %load 'ranks_emp3_k15.mat';
-                divisor = 45;
+            load 'features_emp1_k15.mat';
+            load 'ranks_emp1.mat';
+            divisor = 1;
+        case 2
+            load 'features_emp2_k15.mat';
+            load 'ranks_emp2.mat';
+            divisor = 1;
+        case 3
+            load 'features_emp3_k15.mat';
+            load 'ranks_emp3.mat';
+            divisor = 1;
     end
 
     clearvars curr;
@@ -42,48 +37,34 @@ function [ weight_mat,chosenFeatures, featureMat, ranks ] = LogisticRegressionMo
      trainlabels_decimated = trainlabels_decimated(1:end-1,:);
      
      %fun = @(XT,YT,xt,yt)LinearRegressionForPrediction(XT,YT,xt,yt);
-
-    disp 'Selecting features';
-    features=[];
-%  	if exist(strcat('training_logranks_movement_',num2str(subject),'v1.mat'),'file')
-%         load(strcat('training_logranks_movement_',num2str(subject),'v1.mat'))
-%         for i = 1:5
-%             features = [features , ranks(i,1:round(length(ranks(i,:))*1/divisor))];
-%         end 
-%     else
-% 
-%         K = 15;
-%         features = [];
-%         ranks = [];
-%         for i=1:5
-%             disp(strcat('--',num2str(i),'--'))
-%             [rnk,~] = relieff(featureMat,trainlabels_decimated(:,i),K);
-%             features = [features , rnk(1:round(length(rnk)*1/divisor))];
-%             ranks = [ranks;rnk];
-%         end
-%     end
-%             
-%     save(strcat('training_logranks_movement_',num2str(subject),'v1.mat'),'ranks','features');
-
-
-    chosenFeatures = unique(features);
      
-    featureMat = featureMat(:,chosenFeatures);
-    for i = 1:5
-        trainlabels_decimated(trainlabels_decimated(:,i) <= max(trainlabels_decimated(:,i))/5,i) = 1;
-        trainlabels_decimated(trainlabels_decimated(:,i) > max(trainlabels_decimated(:,i))/5,i) = 2;
-    end
- %Generating weight matix
+     disp 'Selecting features';
+%      K = 15;
+      features = [];
+%      ranks = [];
+     for i=1:5
+%        [rnk,~] = relieff(featureMat,trainlabels_decimated(:,i),K);
+        features = [features , ranks(i,1:round(length(ranks(i,:))*1/divisor))];
+%        features = [features , rnk(1:round(length(rnk)*1/55))];
+%        ranks = [ranks;rnk];
+     end
+         
+%     save(strcat('ranks',num2str(fix(clock)),'_k15.mat'),'ranks');
+
+     chosenFeatures = unique(features);
+     
+     featureMat = featureMat(:,chosenFeatures);
     
-    weight_mat = zeros([size(featureMat,2)+1,5]);
-    disp('Generating Log Weight Matrix')
+     trainlabels_decimated(trainlabels_decimated>=1) = 2;
+     trainlabels_decimated(trainlabels_decimated<1) = 1;
 
-    for i=1:5
-        disp(strcat('--',num2str(i),'--'))
-
-        w = mnrfit(featureMat,trainlabels_decimated(:,i),'EstDisp','on');
-        weight_mat(:,i) = w;
+     weight_mat = zeros([size(featureMat,2)+1,5]);
+    
+     for i=1:5
+    %Generating weight matrix
+       w = mnrfit(featureMat,trainlabels_decimated(:,i),'EstDisp','on');
+       weight_mat(:,i) = w;
         disp 'Done for one finger';
-        end
+     end
 end
 

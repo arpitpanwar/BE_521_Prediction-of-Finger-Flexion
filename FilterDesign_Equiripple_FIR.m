@@ -1,4 +1,4 @@
-function Hd = FilterDesign_Equiripple_FIR(start, stop)
+function Hd = FilterDesign_Equiripple_FIR(start,stop)
 %FILTERDESIGN_EQUIRIPPLE_FIR Returns a discrete-time filter object.
 
 % MATLAB Code
