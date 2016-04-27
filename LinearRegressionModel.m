@@ -6,8 +6,8 @@ function [ weight_mat, chosenFeatures, featureMat, ranks ] = LinearRegressionMod
 
     disp 'Generating feature matrix in linear regression model';          
 
-    if exist(strcat('trainfeatures_Movement_subject_',num2str(subject),'_v8.mat'),'file')
-        load(strcat('trainfeatures_Movement_subject_',num2str(subject),'_v7.mat'));
+    if exist(strcat('trainfeatures_subject_',num2str(subject),'_v8.mat'),'file')
+        load(strcat('trainfeatures_subject_',num2str(subject),'_v8.mat'));
     else
         featureMat = FeatureGeneration(train_ecog_data,wins,samplingRate,windowSize,displ);
     end 
@@ -25,7 +25,9 @@ function [ weight_mat, chosenFeatures, featureMat, ranks ] = LinearRegressionMod
 %           load('ranks_emp3_k15.mat');
             divisor = 60;
      end
-    clearvars curr;
+     save(strcat('trainfeatures_subject_',num2str(subject),'_v8.mat'));
+
+     clearvars curr;
     %Decimate the training labels
     trainlabels_decimated = zeros([int64(length(train_labels)/(displ*10^3)),5]);
 
@@ -42,8 +44,8 @@ function [ weight_mat, chosenFeatures, featureMat, ranks ] = LinearRegressionMod
      
     disp 'Selecting features';
     features=[];
- 	if exist(strcat('training_ranks_Movement',num2str(subject),'_v5.mat'),'file')
-        load(strcat('training_ranks_Movement',num2str(subject),'_v5.mat'))
+ 	if exist(strcat('training_ranks',num2str(subject),'_v5.mat'),'file')
+        load(strcat('training_ranks',num2str(subject),'_v5.mat'))
         for i = 1:5
             features = [features , ranks(i,1:round(length(ranks(i,:))*1/divisor))];
         end 

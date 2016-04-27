@@ -35,7 +35,7 @@ if  run_all == 1 || subject == 1
     %[filteredlabels,filterWeights] = PreFilter(trainlabels_sub1);
 
     %Logistic regression / movement
-    [weights_log_sub1,pred_train_log_sub1, stats]= GenerateMovementReduction(traindata_sub1,trainlabels_sub1,sr,windowSize,displ,testdata_sub1,testduration_sub1,1, 25,1000,1200);
+    [weights_log_sub1,pred_train_svm_sub1, stats]= GenerateMovementReduction(traindata_sub1,trainlabels_sub1,sr,windowSize,displ,testdata_sub1,testduration_sub1,1, 25,1000,1200);
     
     %linear regression
     
@@ -45,7 +45,7 @@ if  run_all == 1 || subject == 1
 
     %SVM
     % for i = 1:1    
-    %     [models_sub1,pred_svm_sub1]= GenerateSVM(traindata_sub1,trainlabels_sub1,sr,windowSize,displ,testdata_sub1(:,newElectrodes_sub1{i}),testduration_sub1,1);
+    %[models_sub1,pred_svm_sub1]= GenerateSVM(traindata_sub1,trainlabels_sub1,sr,windowSize,displ,testdata_sub1,testduration_sub1,1);
     % end
 
     %load(strcat('pred_svm',num2str(subject),'.mat'));

@@ -1,15 +1,21 @@
 function [ pred_rounded ] = Prediction_SVM( models,train_limits,test_data,samplingRate,duration,windowSize,displ)
-
-    wins = NumWins(length(test_data),samplingRate,windowSize,displ);
-
-    featureMat = FeatureGeneration(test_data,wins,samplingRate,windowSize,displ);
-
-    pred = zeros([length(featureMat),size(models,1)]);
+    testing=0;
+    duration = length(test_data)/1000;
+    if duration ~= 310
+        testing = 1;
+    end
+        disp(strcat('Generating features for prediction:',num2str(subject)));
+        file = strcat('predict_SVM_movement_featureMat_',num2str(testing),'_subject_',num2str(subject),'_',num2str(testing),'v1.mat');
+        if exist(file,'file')
+            load(file);
+        else
+            wins = NumWins(length(test_data),samplingRate,windowSize,displ);            
+            featureMat = FeatureGeneration(test_data,wins,samplingRate,windowSize,displ);
+            save(strcat('predict_SVM_movement_featureMat_',num2str(testing),'_subject_',num2str(subject),'_',num2str(testing),'v1.mat'), 'featureMat');
+        end
     
-    for i=1:size(pred,2)
-       
-        pred(:,i) = predict(models{i},featureMat);
-        
+    for i=1:size(pred,2)       
+        pred(:,i) = predict(models{i},featureMat);        
     end
     
    % pred = round(pred);

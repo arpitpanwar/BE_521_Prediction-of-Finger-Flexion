@@ -1,6 +1,6 @@
 function [ featureMat ] = FeatureGeneration( input_mat,windows,samplingRate,windowsize,displ )
 
-    numFeatures = 13;
+    numFeatures = 3;
     len = size(input_mat,2);
     featureMat = zeros([int64(windows),len*numFeatures]);
     Hd = FilterDesign_Equiripple_FIR(1, 60);
@@ -9,6 +9,8 @@ function [ featureMat ] = FeatureGeneration( input_mat,windows,samplingRate,wind
     signal_60_100 = filter(Hd.coefficients{1}, 1, input_mat);
     Hd = FilterDesign_Equiripple_FIR(100, 200);
     signal_100_200 = filter(Hd.coefficients{1}, 1, input_mat);    
+
+    save(
     
     % Generating features
     for i=0:len-1
@@ -19,73 +21,59 @@ function [ featureMat ] = FeatureGeneration( input_mat,windows,samplingRate,wind
         curr = input_mat(:,i+1);
         featureMat(:,i*numFeatures+(mod(counter,numFeatures))) = MovingWinFeats(curr,samplingRate,windowsize,displ,@(x)mean(x));
         disp(strcat(num2str(i),':', num2str(counter)))
-
-        counter = counter+1;
-        % Converting in frequency domain
-        [s,w,~] = spectrogram(curr,windowsize*10^3,displ*10^3,[],2*samplingRate);
-        disp(strcat(num2str(i),':', num2str(counter)))
-
-        %5-15 hz frequency
-        num1 = find(w>=5 & w<=15);
-        featureMat(1:length(s),i*numFeatures+(mod(counter,numFeatures))) =mean(abs(s(num1,:)),1)';        
-        counter = counter+1;
-        disp(strcat(num2str(i),':', num2str(counter)))
-        
-        %20-25 hz frequency
-        num1 = find(w>=20 & w<=25);
-        featureMat(1:length(s),i*numFeatures+(mod(counter,numFeatures))) = mean(abs(s(num1,:)),1)';
-
-        counter = counter+1;
-        disp(strcat(num2str(i),':', num2str(counter)))
-        
-        %75-115 hz frequency
-        num1 = find(w>=75 & w<=115);
-        featureMat(1:length(s),i*numFeatures+(mod(counter,numFeatures))) = mean(abs(s(num1,:)),1)';
-
-        counter = counter+1;
-        disp(strcat(num2str(i),':', num2str(counter)))
-        
-        %125-160 hz frequency
-        num1 = find(w>=125 & w<160);
-        featureMat(1:length(s),i*numFeatures+(mod(counter,numFeatures))) = mean(abs(s(num1,:)),1)';
-        
-        counter = counter+1;
-        disp(strcat(num2str(i),':', num2str(counter)))
-        
-        %160-175 hz frequency
-        num1 = find(w>=160 & w<175);
-        featureMat(1:length(s),i*numFeatures+(mod(counter,numFeatures))) = mean(abs(s(num1,:)),1)';
-       
-        counter = counter+1;
-        disp(strcat(num2str(i),':', num2str(counter)))
-        
-        %Line Length
-        featureMat(:,i*numFeatures+(mod(counter,numFeatures))) = MovingWinFeats(curr,samplingRate,windowsize,displ,@(x)LineLength(x));
+% 
+%         counter = counter+1;
+%         % Converting in frequency domain
+%         [s,w,~] = spectrogram(curr,windowsize*10^3,displ*10^3,[],2*samplingRate);
+%         disp(strcat(num2str(i),':', num2str(counter)))
+% % 
+%         %5-15 hz frequency
+%         num1 = find(w>=5 & w<=15);
+%         featureMat(1:length(s),i*numFeatures+(mod(counter,numFeatures))) =mean(abs(s(num1,:)),1)';        
+%         counter = counter+1;
+%         disp(strcat(num2str(i),':', num2str(counter)))
+%         
+%         %20-25 hz frequency
+%         num1 = find(w>=20 & w<=25);
+%         featureMat(1:length(s),i*numFeatures+(mod(counter,numFeatures))) = mean(abs(s(num1,:)),1)';
+% 
+%         counter = counter+1;
+%         disp(strcat(num2str(i),':', num2str(counter)))
+%         
+%         %75-115 hz frequency
+%         num1 = find(w>=75 & w<=115);
+%         featureMat(1:length(s),i*numFeatures+(mod(counter,numFeatures))) = mean(abs(s(num1,:)),1)';
+% 
+%         counter = counter+1;
+%         disp(strcat(num2str(i),':', num2str(counter)))
+%         
+%         %125-160 hz frequency
+%         num1 = find(w>=125 & w<160);
+%         featureMat(1:length(s),i*numFeatures+(mod(counter,numFeatures))) = mean(abs(s(num1,:)),1)';
+%                 counter=counter+1;
+% 
+%         counter = counter+1;
+%         disp(strcat(num2str(i),':', num2str(counter)))
+%                 counter=counter+1;
+% 
+%         %160-175 hz frequency
+%         num1 = find(w>=160 & w<175);
+%         featureMat(1:length(s),i*numFeatures+(mod(counter,numFeatures))) = mean(abs(s(num1,:)),1)';
+%        
         counter = counter+1;
         disp(strcat(num2str(i),':', num2str(counter)))
-        
         %Energy
         featureMat(:,i*numFeatures+(mod(counter,numFeatures))) = MovingWinFeats(curr,samplingRate,windowsize,displ,@(x)Energy(x));
-        counter = counter+1;
-        disp(strcat(num2str(i),':', num2str(counter)))
- 
-        %Variance
-        featureMat(:,i*numFeatures+(mod(counter,numFeatures))) = MovingWinFeats(curr,samplingRate,windowsize,displ,@(x)var(x));
-    
-        counter = counter+1;
-        disp(strcat(num2str(i),':', num2str(counter)))
-
-        %Area
-        featureMat(:,i*numFeatures+(mod(counter,numFeatures))) = MovingWinFeats(curr,samplingRate,windowsize,displ,@(x)Area(x));
         
-
-        disp(strcat(num2str(i),':', num2str(counter)))
-
+        
+        counter = counter+1;
+        disp(strcat(num2str(i),':', num2str(counter))l;
         % Energy 1-60
         %featureMat(:,i*numFeatures+(mod(counter,numFeatures))) = MovingWinFeats(curr,samplingRate,windowsize,displ,@(x)bandpower(x,samplingRate,[1,60]));
         featureMat(:,i*numFeatures+(mod(counter,numFeatures))) = MovingWinFeats(signal_1_60,samplingRate,windowsize,displ,@(x)Energy(x));
 
-        counter=counter+1;
+        
+counter=counter+1;
         disp(strcat(num2str(i),':', num2str(counter)))
 
          %Bandpower
