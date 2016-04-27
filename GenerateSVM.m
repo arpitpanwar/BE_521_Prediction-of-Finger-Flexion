@@ -1,16 +1,13 @@
-function [models,predictions] = GenerateSVM(traindata,trainlabels,sr,windowSize,displ,testdata,testDuration)
-    
-    trainlabels(trainlabels <=1) = 0;
-    trainlabels(trainlabels >1) = 1;
+function [models,predictions] = GenerateSVM(traindata,trainlabels,sr,windowSize,displ,testdata,testDuration,subject)
 
-    models = SVMModels(traindata,trainlabels,sr,windowSize,displ);
+    [models] = SVMModels(traindata,trainlabels,sr,windowSize,displ,subject);
        
     train_limits = zeros([5,2]);
     
-    for i=1:5
-        train_limits(i,1)=min(trainlabels(:,i));
-        train_limits(i,2)=max(trainlabels(:,i));
-    end
+    
+        train_limits(1,1)=min(trainlabels);
+        train_limits(1,2)=max(trainlabels);
+    
 
     %Predicting
     predictions = Prediction_SVM(models,train_limits,testdata,sr,testDuration,windowSize,displ);

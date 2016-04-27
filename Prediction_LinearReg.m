@@ -1,14 +1,40 @@
-function [ pred_rounded ] = Prediction_LinearReg( weight_mat,train_limits,test_data,samplingRate,duration,windowSize,displ,chosenFeatures )
+function [ pred_rounded ] = Prediction_LinearReg( weight_mat,train_limits,...
+        test_data,samplingRate,~,windowSize,displ,chosenFeatures,history,subject )
+    
+    testing=0;
+    duration = length(test_data)/1000;
+    if duration ~= 310
+        testing = 1;
+    end
+        disp(strcat('Generating features for prediction:',num2str(subject)));
+        file = strcat('linreg_electrodes_movement_pred_featureMat_','_subject_',num2str(subject),'_',num2str(testing),'v8.mat');
+        if exist(file,'file')
+            load(file);
+        else
+            wins = NumWins(length(test_data),samplingRate,windowSize,displ);
+            
+            featureMat = FeatureGeneration(test_data,wins,samplingRate,windowSize,displ);
+            save(strcat('linreg_electrodes_movement_pred_featureMat',num2str(testing),'_subject_',num2str(subject),'_',num2str(testing),'v8.mat'), 'featureMat');
+        end
 
-    wins = NumWins(length(test_data),samplingRate,windowSize,displ);
+        %         weight_mat = weight_mat(find(weight_mat));
+%         pred2 = featureMat*weight_mat;  
+%        Same predictions when I compared pred2 vs pred
 
-    disp 'Generating features while prediction';
-    featureMat = FeatureGeneration(test_data,wins,samplingRate,windowSize,displ);
+        %load('predictions_subject',num2str(subject),'_finger',num2str(i),'.mat');
+        %featureMat = [ones([size(featureMat,1),1]),featureMat];       
 
     featureMat = featureMat(:,chosenFeatures);
-        featureMat = [ones([size(featureMat,1),1]),featureMat];
-
+    featureMat = FeatureHistoryGeneration( featureMat,history );
+    featureMat = [ones([size(featureMat,1),1]),featureMat];   
     pred = featureMat*weight_mat;
+
+    disp(strcat('Calculating predictions:',num2str(subject)));    
+
+    disp 'Generating features while prediction';
+%     featureMat = FeatureGeneration(test_data,wins,samplingRate,windowSize,displ);
+%     save(strcat('Testing_features',num2str(clock)),'featureMat');
+   
     
    % pred = round(pred);
     % Spline function takes in the time that y occured and what time y should
@@ -33,6 +59,4 @@ function [ pred_rounded ] = Prediction_LinearReg( weight_mat,train_limits,test_d
         pred_remove = find(pred_rounded > maximum);
         pred_rounded(pred_remove) = maximum;
     end
-
 end
-

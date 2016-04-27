@@ -1,4 +1,4 @@
-function Hd = FilterDesign_Equiripple_FIR
+function Hd = FilterDesign_Equiripple_FIR(start, stop)
 %FILTERDESIGN_EQUIRIPPLE_FIR Returns a discrete-time filter object.
 
 % MATLAB Code
@@ -11,10 +11,10 @@ function Hd = FilterDesign_Equiripple_FIR
 Fs = 2000;  % Sampling Frequency
 
 N      = 10;   % Order
-Fstop1 = 4;    % First Stopband Frequency
-Fpass1 = 5;    % First Passband Frequency
-Fpass2 = 175;  % Second Passband Frequency
-Fstop2 = 176;  % Second Stopband Frequency
+Fstop1 = start-1;    % First Stopband Frequency
+Fpass1 = start;    % First Passband Frequency
+Fpass2 = stop;  % Second Passband Frequency
+Fstop2 = stop+1;  % Second Stopband Frequency
 Wstop1 = 1;    % First Stopband Weight
 Wpass  = 3;    % Passband Weight
 Wstop2 = 1;    % Second Stopband Weight
