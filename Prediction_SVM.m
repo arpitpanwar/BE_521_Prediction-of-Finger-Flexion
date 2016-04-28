@@ -1,4 +1,4 @@
-function [ pred_rounded ] = Prediction_SVM( models,train_limits,test_data,samplingRate,duration,windowSize,displ,chosenFeatures )
+function [ pred_rounded ] = Prediction_SVM( models,train_limits,test_data,samplingRate,duration,windowSize,displ,chosenFeatures, history)
 
     wins = NumWins(length(test_data),samplingRate,windowSize,displ);
 

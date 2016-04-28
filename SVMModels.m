@@ -8,11 +8,11 @@ function [ models,chosenFeatures ] = SVMModels( train_ecog_data,train_labels,sam
    disp 'Generating feature matrix in svm model';
    
    version = 1;  
-   featureFile = strcat('featuresReduced_', num2str(subject), '_v',num2str(version), '.mat');
+   featureFile = strcat('features_', num2str(subject), '_v',num2str(version), '.mat');
    
    if ~savefileExists(featureFile)
-      featureMat = FeatureGenerationReduced(train_ecog_data,wins,samplingRate,windowSize,displ,history);
-      save(strcat('featuresReduced_',num2str(subject),'_v1.mat'),'featureMat');
+      featureMat = FeatureGeneration(train_ecog_data,wins,samplingRate,windowSize,displ,history);
+      save(strcat('features_',num2str(subject),'_v1.mat'),'featureMat');
    end
    
    divisor = [5, 25, 20];
@@ -29,12 +29,12 @@ function [ models,chosenFeatures ] = SVMModels( train_ecog_data,train_labels,sam
     ranks = [];
     
     version = 1;  
-    ranksFile = strcat('reductionRanks_reduced_', num2str(subject), '_v',num2str(version), '.mat');
+    ranksFile = strcat('reductionRanks_', num2str(subject), '_v',num2str(version), '.mat');
     disp 'Selecting features from ranks';
     
     if ~savefileExists(ranksFile)
         reductionRanks(featureMat, trainlabels_decimated, divisor(subject), K)
-        save(strcat('reductionRanks_reduced_',num2str(subject),'_v',num2str(version),'.mat'),'ranks');  
+        save(strcat('reductionRanks_',num2str(subject),'_v',num2str(version),'.mat'),'ranks');  
     end
     
     for i=1:size(train_labels,2) 
@@ -45,13 +45,13 @@ function [ models,chosenFeatures ] = SVMModels( train_ecog_data,train_labels,sam
     featureMat = featureMat(:,chosenFeatures);
 
    %% Lasso Reduction
-   
+   % **** Turned off at if statement *****
    version = 1;
-   lassoFile = strcat('reductionLasso_reduced_', num2str(subject), '_v',num2str(version), '.mat');
+   lassoFile = strcat('reductionLasso_', num2str(subject), '_v',num2str(version), '.mat');
    weight_mat = zeros([size(featureMat,2),size(train_labels,2)]);
    if ~savefileExists(lassoFile) && 1 == 0;
         weight_mat = reductionLasso(featureMat, trainlabels_decimated);
-        save(strcat('reductionLasso_reduced_',num2str(subject),'_v',num2str(version),'.mat'),'weight_mat');  
+        save(strcat('reductionLasso_',num2str(subject),'_v',num2str(version),'.mat'),'weight_mat');  
    end
    %% 
     %Generating weight matrix

@@ -1,6 +1,6 @@
-function [models,predictions] = GenerateSVM(traindata,trainlabels,sr,windowSize,displ,testdata,testDuration,subject)
+function [models,predictions] = GenerateSVM(traindata,trainlabels,sr,windowSize,displ,testdata,testDuration,subject, history)
 
-    [models,chosenFeatures] = SVMModels(traindata,trainlabels,sr,windowSize,displ,subject);
+    [models,chosenFeatures] = SVMModels(traindata,trainlabels,sr,windowSize,displ,subject,history);
        
     train_limits = zeros([5,2]);
     
@@ -10,6 +10,6 @@ function [models,predictions] = GenerateSVM(traindata,trainlabels,sr,windowSize,
     end
 
     %Predicting
-    predictions = Prediction_SVM(models,train_limits,testdata,sr,testDuration,windowSize,displ,chosenFeatures);
+    predictions = Prediction_SVM(models,train_limits,testdata,sr,testDuration,windowSize,displ,chosenFeatures,history);
     
 end
