@@ -4,11 +4,14 @@ warning('off','all');
 windowSize = 0.08;
 displ = 0.04;
 sr = 10^3;
-user = 1;
+user = 2;
+
+subject = 0;
 %% Generate predictions for subject 1
 
 %Get data
-[traindata_sub1,trainlabels_sub1,testdata_sub1,testduration_sub1] = GetDataForSubject1(user);
+if subject == 1 || subject == 0
+    [traindata_sub1,trainlabels_sub1,testdata_sub1,testduration_sub1] = GetDataForSubject1(user);
 
 %[filteredlabels,filterWeights] = PreFilter(trainlabels_sub1);
 % testDuration = length(traindata_sub1)/sr;
@@ -22,7 +25,7 @@ user = 1;
 %     trainlabels_sub1,sr,windowSize,displ,testdata_sub1,testduration_sub1,1,15);
 
 %SVM
-%[models_sub1,pred_svm_sub1]= GenerateSVM(traindata_sub1,trainlabels_sub1,sr,windowSize,displ,testdata_sub1,testduration_sub1,1);
+[models_sub1,pred_svm_sub1]= GenerateSVM(traindata_sub1,trainlabels_sub1,sr,windowSize,displ,testdata_sub1,testduration_sub1,1);
 
 % trainlen = length(traindata_sub1);
 % testdata_sub1 = traindata_sub1(1:(round(trainlen/2)),:);
@@ -32,9 +35,9 @@ user = 1;
 % testlabels_sub1 = trainlabels_sub1(1:(round(trainlen/2)),:);
 % testduration_sub1 = length(testdata_sub1)/1e3;
 
-%Ridge
-[weights_sub1,pred_ridreg_sub1]= GenerateRidgeRegression(traindata_sub1,...
-   trainlabels_sub1,sr,windowSize,displ,testdata_sub1,testduration_sub1,1,45);
+% %Ridge
+% [weights_sub1,pred_ridreg_sub1]= GenerateRidgeRegression(traindata_sub1,...
+%    trainlabels_sub1,sr,windowSize,displ,testdata_sub1,testduration_sub1,1,45);
 
 %Stepwise
 %[weights_sub1,pred_stepreg_sub1]= GenerateStepwiseRegression(traindata_sub1,trainlabels_sub1,sr,windowSize,displ,testdata_sub1,testduration_sub1,1);
@@ -49,9 +52,9 @@ user = 1;
 pred_sub1 = pred_ridreg_sub1;%.* pred_logreg_sub1;
 
 clearvars traindata_sub1 trainlabels_sub1 testdata_sub1 testduration_sub1;
-
+end
 %% Generate predictions for subject 2
-
+if subject == 2 || subject == 0
 %Get data
 [traindata_sub2,trainlabels_sub2,testdata_sub2,testduration_sub2] = GetDataForSubject2(user);
 
@@ -80,8 +83,9 @@ pred_sub2 = pred_ridreg_sub2;%.* pred_logreg_sub2;
 
 
 clearvars traindata_sub2 trainlabels_sub2 testdata_sub2 testduration_sub2;
-
+end
 %% Generate predictions for subject 3
+if subject == 3 || subject == 0
 %Get data
 [traindata_sub3,trainlabels_sub3,testdata_sub3,testduration_sub3] = GetDataForSubject3(user);
 
@@ -114,7 +118,7 @@ clearvars traindata_sub3 trainlabels_sub3 testdata_sub3 testduration_sub3;
 
 %[model_ensemble_learning,predictions_ensemble] = GenerateEnsembleLearning();
 %[model_logistic_regression,predictions_logistic_reg] = GenerateLogisticRegression();
-
+end
 %% Gather predictions
 predicted_dg = cell(3,1);
 predicted_dg{1} = pred_sub1;
