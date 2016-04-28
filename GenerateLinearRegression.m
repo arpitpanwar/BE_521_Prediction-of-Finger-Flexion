@@ -1,17 +1,14 @@
 function [weights,predictions] = GenerateLinearRegression(traindata, ...
         trainlabels,sr,windowSize,displ,testdata,testDuration,subject,history)
     
-%     train_limits = zeros([5,2]);
-%     
-%     for i=1:5
-%         train_limits(i,1)=min(trainlabels(:,i));
-%         train_limits(i,2)=max(trainlabels(:,i));
-%     end
-%     
-%     save(strcat('Trainlimits_sub',num2str(subject),'.mat'),'train_limits');
+    train_limits = zeros([5,2]);
     
-    load(strcat('Trainlimits_sub',num2str(subject),'.mat'));
-        
+    for i=1:5
+        train_limits(i,1)=min(trainlabels(:,i));
+        train_limits(i,2)=max(trainlabels(:,i));
+    end
+    
+
     [weights,chosenFeatures] = LinearRegressionModel(traindata,trainlabels, ...
             sr,windowSize,displ,subject,history);
        

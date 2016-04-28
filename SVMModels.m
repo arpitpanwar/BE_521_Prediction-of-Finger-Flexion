@@ -1,4 +1,4 @@
-function [ models,chosenFeatures ] = SVMModels( train_ecog_data,train_labels,samplingRate,windowSize,displ,subject )
+function [ models,chosenFeatures ] = SVMModels( train_ecog_data,train_labels,samplingRate,windowSize,displ,subject,history)
    
    wins = NumWins(length(train_ecog_data),samplingRate,windowSize,displ);  
    disp ' ----- '
@@ -11,23 +11,15 @@ function [ models,chosenFeatures ] = SVMModels( train_ecog_data,train_labels,sam
    featureFile = strcat('featuresReduced_', num2str(subject), '_v',num2str(version), '.mat');
    
    if ~savefileExists(featureFile)
-      featureMat = FeatureGenerationReduced(train_ecog_data,wins,samplingRate,windowSize,displ);
-      save(strcat('featuresReduced_',strcat(subject),'_v1.mat'),'featureMat');
+      featureMat = FeatureGenerationReduced(train_ecog_data,wins,samplingRate,windowSize,displ,history);
+      save(strcat('featuresReduced_',num2str(subject),'_v1.mat'),'featureMat');
    end
    
    divisor = [5, 25, 20];
 
     %% Decimate the training labels
-    trainlabels_decimated = zeros([int64(length(train_labels)/(displ*10^3)),5]);
-
-    for i=1:5
-        trainlabels_decimated(:,i) = decimate(train_labels(:,i),displ*10^3);
-    end
     
-   % train_labl_test = trainlabels_decimated;
-
-    %trainlabels_decimated = [train_labl_test(1:end-2,:);train_labl_test(length(trainlabels_decimated),:)];
-     trainlabels_decimated = trainlabels_decimated(1:end-1,:);
+    trainlabels_decimated = trainlabelsPreload(train_labels);    
      
      %fun = @(XT,YT,xt,yt)LinearRegressionForPrediction(XT,YT,xt,yt);
     
@@ -42,10 +34,10 @@ function [ models,chosenFeatures ] = SVMModels( train_ecog_data,train_labels,sam
     
     if ~savefileExists(ranksFile)
         reductionRanks(featureMat, trainlabels_decimated, divisor(subject), K)
-        save(strcat('reductionRanks_reduced_',strcat(subject),'_v',num2str(version),'.mat'),'ranks');  
+        save(strcat('reductionRanks_reduced_',num2str(subject),'_v',num2str(version),'.mat'),'ranks');  
     end
     
-    for i=1:5  
+    for i=1:size(train_labels,2) 
         features = [features , rnk(1:round(length(rnk)*1/divisor(subject)))];
         ranks = [ranks;rnk];       
     end
@@ -56,10 +48,10 @@ function [ models,chosenFeatures ] = SVMModels( train_ecog_data,train_labels,sam
    
    version = 1;
    lassoFile = strcat('reductionLasso_reduced_', num2str(subject), '_v',num2str(version), '.mat');
-   weight_mat = zeros([size(featureMat,2),5]);
+   weight_mat = zeros([size(featureMat,2),size(train_labels,2)]);
    if ~savefileExists(lassoFile) && 1 == 0;
         weight_mat = reductionLasso(featureMat, trainlabels_decimated);
-        save(strcat('reductionLasso_reduced_',strcat(subject),'_v',num2str(version),'.mat'),'weight_mat');  
+        save(strcat('reductionLasso_reduced_',num2str(subject),'_v',num2str(version),'.mat'),'weight_mat');  
    end
    %% 
     %Generating weight matrix
@@ -70,9 +62,20 @@ function [ models,chosenFeatures ] = SVMModels( train_ecog_data,train_labels,sam
        models{i} = fitrsvm(featureMat,trainlabels_decimated(:,i),'Standardize',true);
        models{i} = compact(models{i});
        disp(strcat('-- Done --'))
-
-       
     end
-  end
+end
+
+function trainlabels_decimated = trainlabelPreload(train_labels)
+    trainlabels_decimated = zeros([int64(length(train_labels)/(displ*10^3)),5]);
+
+    for i=1:size(train_labels,2)
+        trainlabels_decimated(:,i) = decimate(train_labels(:,i),displ*10^3);
+    end
+    
+   % train_labl_test = trainlabels_decimated;
+
+    %trainlabels_decimated = [train_labl_test(1:end-2,:);train_labl_test(length(trainlabels_decimated),:)];
+     trainlabels_decimated = trainlabels_decimated(1:end-1,:);
+ end
 
 
