@@ -1,4 +1,4 @@
-function [ models,chosenFeatures ] = SVMModels( train_ecog_data,train_labels,samplingRate,windowSize,displ,subject )
+function [ models,chosenFeatures ] = SVMModels( train_ecog_data,train_labels,samplingRate,windowSize,displ,subject, history)
 
    wins = NumWins(length(train_ecog_data),samplingRate,windowSize,displ);
     
