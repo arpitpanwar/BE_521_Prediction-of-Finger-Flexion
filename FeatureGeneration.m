@@ -1,4 +1,4 @@
-function [ featureMat ] = FeatureGeneration( input_mat,windows,samplingRate,windowsize,displ )
+function [ featureMat ] = FeatureGeneration( input_mat,windows,samplingRate,windowsize,displ ,history)
 
 numFeatures = 14;
 len = size(input_mat,2);
