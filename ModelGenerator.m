@@ -8,8 +8,10 @@ user = 1;
 %% Generate predictions for subject 1
 
 %Get data
-[traindata_sub1,trainlabels_sub1,testdata_sub1,testduration_sub1] = GetDataForSubject1(user);
+    [traindata_sub1,trainlabels_sub1,testdata_sub1,testduration_sub1] = GetDataForSubject1(user);
 
+history = 45;    
+    
 %[filteredlabels,filterWeights] = PreFilter(trainlabels_sub1);
 % testDuration = length(traindata_sub1)/sr;
 % 
@@ -22,7 +24,7 @@ user = 1;
 %     trainlabels_sub1,sr,windowSize,displ,testdata_sub1,testduration_sub1,1,15);
 
 %SVM
-%[models_sub1,pred_svm_sub1]= GenerateSVM(traindata_sub1,trainlabels_sub1,sr,windowSize,displ,testdata_sub1,testduration_sub1,1);
+[models_sub1,pred_svm_sub1]= GenerateSVM(traindata_sub1,trainlabels_sub1,sr,windowSize,displ,testdata_sub1,testduration_sub1, subject, history);
 
 % trainlen = length(traindata_sub1);
 % testdata_sub1 = traindata_sub1(1:(round(trainlen/2)),:);
@@ -52,7 +54,6 @@ pred_sub1 = pred_logreg_sub1;%.* pred_logreg_sub1;
 clearvars traindata_sub1 trainlabels_sub1 testdata_sub1 testduration_sub1;
 
 %% Generate predictions for subject 2
-
 %Get data
 [traindata_sub2,trainlabels_sub2,testdata_sub2,testduration_sub2] = GetDataForSubject2(user);
 
@@ -61,7 +62,7 @@ clearvars traindata_sub1 trainlabels_sub1 testdata_sub1 testduration_sub1;
 %      trainlabels_sub2,sr,windowSize,displ,testdata_sub2,testduration_sub2,2,15);
 
 %SVM
-%[models_sub2,pred_svm_sub2]= GenerateSVM(traindata_sub2,trainlabels_sub2,sr,windowSize,displ,testdata_sub2,testduration_sub2,2);
+[models_sub2,pred_svm_sub2]= GenerateSVM(traindata_sub2,trainlabels_sub2,sr,windowSize,displ,testdata_sub2,testduration_sub2,subject, history);
 
 % Ridge
 % [weights_sub2,pred_ridreg_sub2]= ...
@@ -83,8 +84,9 @@ pred_sub2 = pred_logreg_sub2;%.* pred_logreg_sub2;
 
 
 clearvars traindata_sub2 trainlabels_sub2 testdata_sub2 testduration_sub2;
-
+end
 %% Generate predictions for subject 3
+if subject == 3 || subject == 0
 %Get data
 [traindata_sub3,trainlabels_sub3,testdata_sub3,testduration_sub3] = GetDataForSubject3(user);
 
@@ -94,7 +96,7 @@ clearvars traindata_sub2 trainlabels_sub2 testdata_sub2 testduration_sub2;
 %      trainlabels_sub3,sr,windowSize,displ,testdata_sub3,testduration_sub3,3,25);
 
 %SVM
-%[models_sub3,pred_svm_sub3]= GenerateSVM(traindata_sub3,trainlabels_sub3,sr,windowSize,displ,testdata_sub3,testduration_sub3,3);
+[models_sub3,pred_svm_sub3]= GenerateSVM(traindata_sub3,trainlabels_sub3,sr,windowSize,displ,testdata_sub3,testduration_sub3,subject, history);
 
 %Ridge
 % [weights_sub3,pred_ridreg_sub3]= ...
@@ -118,12 +120,14 @@ clearvars traindata_sub3 trainlabels_sub3 testdata_sub3 testduration_sub3;
 
 %[model_ensemble_learning,predictions_ensemble] = GenerateEnsembleLearning();
 %[model_logistic_regression,predictions_logistic_reg] = GenerateLogisticRegression();
+end
 
-%% Gather predictions
-predicted_dg = cell(3,1);
-predicted_dg{1} = pred_sub1;
-predicted_dg{2} = pred_sub2;
-predicted_dg{3} = pred_sub3;
+if subject == 0
+    %% Gather predictions
+    predicted_dg = cell(3,1);
+    predicted_dg{1} = pred_sub1;
+    predicted_dg{2} = pred_sub2;
+    predicted_dg{3} = pred_sub3;
 
 weights_pred_linreg = cell(3,1);
 weights_pred_linreg{1} = weights_sub1_log;
