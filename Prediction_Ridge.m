@@ -5,8 +5,9 @@ function [ pred_rounded ] = Prediction_Ridge( weight_mat,train_limits,...
 
     disp 'Generating features while prediction';
     featureMat = FeatureGeneration(test_data,wins,samplingRate,windowSize,displ);
-    save(strcat('Testing_features_sub',num2str(subject),'.mat'),'featureMat');
-    
+    %save(strcat('Testing_features_sub',num2str(subject),'.mat'),'featureMat');
+    %load(strcat('Testing_features_sub',num2str(subject),'.mat'));
+
 %     switch subject
 %     
 %         case 1

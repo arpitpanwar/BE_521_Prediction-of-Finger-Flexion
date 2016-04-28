@@ -1,7 +1,9 @@
-function [ weights,predictions ] = GenerateLogisticRegression(traindata,trainlabels,sr,windowSize,displ,testdata,testDuration,subject)
+function [ weights,predictions ] = GenerateLogisticRegression(traindata,...
+        trainlabels,sr,windowSize,displ,testdata,testDuration,subject,history)
     
    
-    [weights,chosenFeatures] = LogisticRegressionModel(traindata,trainlabels,sr,windowSize,displ,subject);
+    [weights,chosenFeatures] = LogisticRegressionModel(traindata,...
+        trainlabels,sr,windowSize,displ,subject,history);
        
     train_limits = zeros([5,2]);
     
@@ -11,9 +13,8 @@ function [ weights,predictions ] = GenerateLogisticRegression(traindata,trainlab
     end
 
     %Predicting
-    predictions = Prediction_LogReg(weights,train_limits,testdata,sr,testDuration,windowSize,displ,chosenFeatures);
-
-
+    predictions = Prediction_LogReg(weights,train_limits,testdata,sr,...
+            testDuration,windowSize,displ,chosenFeatures,history);
 
 end
 

@@ -33,7 +33,7 @@ clearvars traindata_sub1 trainlabels_sub1 testdata_sub1 testduration_sub1;
 
 [weights_sub2,pred_ridreg_sub2]= ...
 GenerateRidgeRegression(traindata_sub2,...
-   trainlabels_sub2,sr,windowSize,displ,traindata_sub2,testDuration,2,25);
+   trainlabels_sub2,sr,windowSize,displ,traindata_sub2,testDuration,2,45);
 
 sub2 = mean(diag(corr(pred_ridreg_sub2(:,[1,2,3,5]),trainlabels_sub2(:,[1,2,3,5]))));
 
@@ -49,7 +49,7 @@ clearvars traindata_sub2 trainlabels_sub2 testdata_sub2 testduration_sub2;
 
 [weights_sub3,pred_ridreg_sub3]= ...
 GenerateRidgeRegression(traindata_sub3,...
-   trainlabels_sub3,sr,windowSize,displ,traindata_sub3,length(traindata_sub3)/sr,3,25);
+   trainlabels_sub3,sr,windowSize,displ,traindata_sub3,length(traindata_sub3)/sr,3,45);
 
 sub3 = mean(diag(corr(pred_ridreg_sub3(:,[1,2,3,5]),trainlabels_sub3(:,[1,2,3,5]))));
 clearvars traindata_sub3 trainlabels_sub3 testdata_sub3 testduration_sub3;

@@ -4,21 +4,21 @@ function [ weight_mat,chosenFeatures ] = RidgeRegressionModel( train_ecog_data,.
         wins = NumWins(length(train_ecog_data),samplingRate,windowSize,displ);
     
     disp 'Generating feature matrix in ridge regression model';
-       featureMat = FeatureGeneration(train_ecog_data,wins,samplingRate,windowSize,displ);
-       save(strcat('features_emp',num2str(subject),'_k15.mat'),'featureMat');
+%        featureMat = FeatureGeneration(train_ecog_data,wins,samplingRate,windowSize,displ);
+%        save(strcat('features_emp',num2str(subject),'_k15.mat'),'featureMat');
     
     switch subject
         case 1
-%          load 'features_emp1_k15.mat';
-%          load('ranks_emp1_k15.mat');
+         load 'features_emp1_k15.mat';
+         load('ranks_emp1_k15.mat');
             numFeatures = 25;
         case 2
-%          load 'features_emp2_k15.mat';
-%          load('ranks_emp2_k15.mat');
+         load 'features_emp2_k15.mat';
+         load('ranks_emp2_k15.mat');
             numFeatures = 25;
         case 3
-%          load 'features_emp3_k15.mat';
-%          load('ranks_emp3_k15.mat');
+         load 'features_emp3_k15.mat';
+         load('ranks_emp3_k15.mat');
             numFeatures = 15;
     end
 
@@ -40,22 +40,24 @@ function [ weight_mat,chosenFeatures ] = RidgeRegressionModel( train_ecog_data,.
 %     fun = @(XT,YT,xt,yt)LinearRegressionForPrediction(XT,YT,xt,yt);
      
     disp 'Selecting features';
-    K = 15;
-    features = [];
-    ranks = [];
-     for i=1:5
-       [rnk,~] = relieff(featureMat,trainlabels_decimated(:,i),K);
+%    K = 15;
+%    features = [];
+%    ranks = [];
+%     for i=1:5
+%       [rnk,~] = relieff(featureMat,trainlabels_decimated(:,i),K);
 %        inmodel = sequentialfs(fun,featureMat,trainlabels_decimated(:,i),'keepin',ranks(i,1:numFeatures));
 %        features = [features , ranks(i,1:numFeatures)];
-       features = [features , rnk(1:numFeatures)];
-       ranks = [ranks;rnk];
-     end
+%       features = [features , rnk(1:numFeatures)];
+%       ranks = [ranks;rnk];
+%     end
          
-     save(strcat('ranks_emp',num2str(subject),'_k',num2str(K),'.mat'),'ranks');
+%     save(strcat('ranks_emp',num2str(subject),'_k',num2str(K),'.mat'),'ranks');
 
-     chosenFeatures = unique(features);
+%     chosenFeatures = unique(features);
      
-     save(strcat('chosenfeatures_sub',num2str(subject),'.mat'),'chosenFeatures');
+%     save(strcat('chosenfeatures_sub',num2str(subject),'.mat'),'chosenFeatures');
+     
+     load(strcat('chosenfeatures_sub',num2str(subject),'.mat'));
      
      featureMat = featureMat(:,chosenFeatures);
      
