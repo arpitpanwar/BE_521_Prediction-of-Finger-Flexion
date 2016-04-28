@@ -1,5 +1,8 @@
 function [ R ] = FeatureHistoryGeneration( featureMat,history )
-    
+    if history == 0
+        R = featureMat; 
+        return
+    end
     N = history;
     R = zeros([length(featureMat),size(featureMat,2)*N]);
     

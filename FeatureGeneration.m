@@ -106,5 +106,8 @@ for i=0:len-1
 end
 
 
+featureMat = FeaturesNormalized(featureMat);
+featureMat = FeatureHistoryGeneration(featureMat, history);
+
 end
 
