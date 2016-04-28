@@ -22,13 +22,15 @@ function [ pred_rounded ] = Prediction_LogReg( weight_mat,train_limits,...
     featureMat = featureMat(:,chosenFeatures);
   %  featureMat = FeatureHistoryGeneration( featureMat,history );
     
-    pred = zeros([size(featureMat,1),5]);
-    disp 'Predicting logregg';
-    for i=1:5
-     p = mnrval(weight_mat(:,i),featureMat);
-     [~,id] = max(p,[],2);
-     pred(:,i) = id-1;
-    end
+     
+     pred = zeros([size(featureMat,1),5]);
+     disp 'Predicting logregg';
+     for i=1:5
+         p = mnrval(weight_mat(:,i),featureMat);
+         [~,id] = max(p,[],2);
+         pred(:,i) = id-1;
+     end
+
    % pred = round(pred);
     % Spline function takes in the time that y occured and what time y should
     % occur

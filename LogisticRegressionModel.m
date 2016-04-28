@@ -54,6 +54,8 @@ function [ weight_mat,chosenFeatures, featureMat] = LogisticRegressionModel( tra
 
     trainlabels_decimated(trainlabels_decimated>=1) = 2;
     trainlabels_decimated(trainlabels_decimated<1) = 1;
+     trainlabels_decimated = round(trainlabels_decimated);
+%     fun = @(XT,YT,xt,yt)LinearRegressionForPrediction(XT,YT,xt,yt);
 
     weight_mat = zeros([size(featureMat,2)+1,5]);
     
