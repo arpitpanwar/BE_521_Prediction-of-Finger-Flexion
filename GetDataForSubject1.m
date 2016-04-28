@@ -20,18 +20,18 @@ function [ traindata,trainlabels,testdata,testDuration ] = GetDataForSubject1(us
 % 
 % traindata_ecog_sub1 = [traindata_ecog_sub1(:,1:54),traindata_ecog_sub1(:,56:end)];
 % 
-% traindata = Preprocess(traindata_ecog_sub1);
-% 
 % trainlabels = session_sub1_dglov.data.getvalues(1:round(sr*totalDuration),1:5);
 % 
 % testdata_ecog_sub1 = session_sub1_test.data.getvalues(1:round(sr*testDuration),1:62);
 % 
 % testdata_ecog_sub1 = [testdata_ecog_sub1(:,1:54),testdata_ecog_sub1(:,56:end)];
-% testdata = Preprocess(testdata_ecog_sub1);
 % 
-% save('Subject1_data.mat','testdata','trainlabels','traindata','testDuration');
+% save('Subject1_data.mat','testdata_ecog_sub1','trainlabels','traindata_ecog_sub1','testDuration');
+load 'Subject1_data.mat';
+testdata = Preprocess(testdata_ecog_sub1);
+traindata = Preprocess(traindata_ecog_sub1);
 
-    load 'Subject1_data.mat';
+   
 
 end
 
