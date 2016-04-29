@@ -3,7 +3,7 @@ function [weight_mat,predictions] = GenerateMovementReduction(traindata, ...
     
     runningTimes = [];
     runningCells = {};
-    trainlabels = sum(trainlabels,2);
+    %trainlabels = sum(trainlabels,2);
     for i = 1:size(trainlabels,2)
         [ Times allTimes ] = MovementDetection(trainlabels(:,i), traindata, displ, pre, post);
         runningCells{length(runningCells)+1} = Times;
@@ -19,11 +19,15 @@ function [weight_mat,predictions] = GenerateMovementReduction(traindata, ...
 running{1} = runningCells;
 running{2} = runningTimes;
   
-
- [weight_mat, chosenFeatures] = LogisticRegressionModel(train_movements,trainlabels, ...
-    sr,windowSize,displ,subject,running);    
-
-
+    weightFile = strcat('Model_MovementReductionLogReg_',num2str(subject)','v2.mat');
+    if ~savefileExists(weightFile)
+        [weight_mat, chosenFeatures] = LogisticRegressionModel(train_movements,trainlabels, ...
+        sr,windowSize,displ,subject,running);            
+        save(weightFile,'weight_mat','chosenFeatures');  
+    else
+        load(weightFile)        
+    end
+    
 	predictions{1} = Prediction_LogReg(weight_mat,0,train_movements,...
             sr,310,windowSize,displ,chosenFeatures,subject, history);
        
@@ -40,6 +44,7 @@ running{2} = runningTimes;
             sr,310,windowSize,displ,chosenFeatures,subject, history);
        
     predictions{2} = Prediction_SVM(models,0,testdata,...
+        
             sr,testDuration,windowSize,displ,chosenFeatures,subject, history);
         
     save(strcat('Predict_MovementReductionSVM_',num2str(subject)','.mat'),'predictions');      

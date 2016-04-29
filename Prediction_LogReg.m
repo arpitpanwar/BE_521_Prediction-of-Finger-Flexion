@@ -4,7 +4,23 @@ function [ pred_rounded ] = Prediction_LogReg( weight_mat,train_limits,...
     wins = NumWins(length(test_data),samplingRate,windowSize,displ);
 
     disp 'Generating features while prediction';
-    featureMat = FeatureGeneration(test_data,wins,samplingRate,windowSize,displ);
+    
+    save_version = 5;  
+
+    if duration == 310
+        featureFile = strcat('featuresMovement_', num2str(subject), '_v',num2str(save_version), '.mat');
+    else
+        featureFile = strcat('featuresPredictMovement_', num2str(subject), '_v',num2str(save_version), '.mat');
+    end
+    if ~savefileExists(featureFile)
+        [featureMat] = FeatureGeneration(test_data,wins,samplingRate,windowSize,displ);
+        save(featureFile,'featureMat');
+    else
+        load(featureFile)
+    end
+        
+    
+    
     %save(strcat('Testing_features_sub',num2str(subject),'.mat'),'featureMat');
     %load(strcat('Testing_features_sub',num2str(subject),'.mat'));
 
@@ -25,7 +41,7 @@ function [ pred_rounded ] = Prediction_LogReg( weight_mat,train_limits,...
     featureMat = FeatureHistoryGeneration( featureMat,history );
     
      
-     pred = zeros([size(featureMat,1),1]);
+     pred = zeros([size(featureMat,1),5]);
      disp 'Predicting logregg';
      for i=1:size(pred,2)
          p = mnrval(weight_mat(:,i),featureMat);
@@ -48,14 +64,14 @@ function [ pred_rounded ] = Prediction_LogReg( weight_mat,train_limits,...
 %     pred_rounded = round(pred_splined);
 
     pred_rounded = pred_splined;
-    train_limits = [0, 1];
+
     %Setting limits
     for i=1:size(pred,2)
-        minimum = train_limits(i,1);
+        minimum  = -1;
         pred_remove = find(pred_rounded < minimum);
         pred_rounded(pred_remove) = minimum;
 
-        maximum = train_limits(i,2);
+        maximum = 1;
         pred_remove = find(pred_rounded > maximum);
         pred_rounded(pred_remove) = maximum;
     end
