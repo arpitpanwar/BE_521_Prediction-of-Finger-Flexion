@@ -19,6 +19,7 @@ function [weight_mat,predictions] = GenerateMovementReduction(traindata, ...
 running{1} = runningCells;
 running{2} = runningTimes;
   
+
  [weight_mat, chosenFeatures] = LogisticRegressionModel(train_movements,trainlabels, ...
     sr,windowSize,displ,subject,running);    
 

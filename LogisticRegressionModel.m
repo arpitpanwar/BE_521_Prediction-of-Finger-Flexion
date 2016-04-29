@@ -45,7 +45,7 @@ function [ weight_mat,chosenFeatures, featureMat] = LogisticRegressionModel( tra
 
    
     train_labels = train3_labels;
-    trainlabels_decimated = trainlabelsPreload(train3_labels,displ);
+    trainlabels_decimated = trainlabelsPreload(train_labels1,displ);
 
      %fun = @(XT,YT,xt,yt)LinearRegressionForPrediction(XT,YT,xt,yt);
     %%  Feature Selection   
@@ -82,7 +82,7 @@ function [ weight_mat,chosenFeatures, featureMat] = LogisticRegressionModel( tra
 %% Generating weight matrix   
 
     for i=1:size(train_labels,2)
-    w = mnrfit(featureMat,round(trainlabels_decimated(:,i)),'EstDisp','on');
+    w = mnrfit(featureMat,round(trainlabels_decimated(:,i)))
        weight_mat(:,i) = w;
         disp 'Done for one finger';
      end

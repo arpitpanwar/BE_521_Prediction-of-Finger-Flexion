@@ -9,7 +9,7 @@ function [ models,chosenFeatures ] = SVMModels( train_ecog_data,train_labels,...
     numFeatures = [25, 25, 15];
     wins = NumWins(length(train_ecog_data),samplingRate,windowSize,displ);  
     disp ' ----- '
-    disp(strcat('Generating Logistic Regression Model for subject: ',num2str(subject)))
+    disp(strcat('Generating SVM Regression Model for subject: ',num2str(subject)))
 
     save_version = 5;  
     featureFile = strcat('featuresMovement_', num2str(subject), '_v',num2str(save_version), '.mat');
@@ -26,7 +26,9 @@ function [ models,chosenFeatures ] = SVMModels( train_ecog_data,train_labels,...
 
 %% Decimate the training labels
     runningTimes = unique(runningTimes);
-
+    
+    
+    
     train_labels(train_labels>=1/5*max(train_labels,2)) = 1;
     train_labels(train_labels<1/5*max(train_labels,2)) = 0; 
     
@@ -38,24 +40,21 @@ function [ models,chosenFeatures ] = SVMModels( train_ecog_data,train_labels,...
     train2_labels = sum(train2_labels,2);
     train3_labels = train2_labels;
     train3_labels(train2_labels>=1) = 1;
-   
+    train3_labels(train2_labels<1) = 0;
+
     train_labels = train3_labels;
     trainlabels_decimated = trainlabelsPreload(train_labels,displ);
     
-    trainlabels_decimated = logical(trainlabels_decimated);
      %fun = @(XT,YT,xt,yt)LinearRegressionForPrediction(XT,YT,xt,yt);
     %%  Feature Selection   
     K = 15;
     features = [];
     ranks = [];
     
-    save_version = 2;  
+    save_version = 3;  
     ranksFile = strcat('reductionRanksMovement_', num2str(subject), '_train3_labels_v',num2str(save_version), '.mat');
     disp 'Selecting features from ranks';
     
-%     trainlabels_decimated(trainlabels_decimated>=1) = 1;
-%     trainlabels_decimated(trainlabels_decimated<1) = 0; 
-
     
     trainlabels_decimated = logical(trainlabels_decimated); 
     

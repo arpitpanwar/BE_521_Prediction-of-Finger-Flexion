@@ -25,7 +25,7 @@ function [ pred_rounded ] = Prediction_LogReg( weight_mat,train_limits,...
     featureMat = FeatureHistoryGeneration( featureMat,history );
     
      
-     pred = zeros([size(featureMat,1),size(chosenFeatures,1)]);
+     pred = zeros([size(featureMat,1),1]);
      disp 'Predicting logregg';
      for i=1:size(pred,2)
          p = mnrval(weight_mat(:,i),featureMat);
