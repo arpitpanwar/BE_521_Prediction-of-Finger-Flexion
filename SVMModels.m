@@ -62,12 +62,13 @@ function [ models,chosenFeatures ] = SVMModels( train_ecog_data,train_labels,...
         [ranks, features] = reductionRanks(featureMat, trainlabels_decimated, numFeatures(subject), K)
         save(strcat('reductionRanksMovement_',num2str(subject),'_train3_labels_v',num2str(save_version),'.mat'),'ranks');  
     else
-       load(ranksFile);
-    end
-    
-    for i=1:size(train_labels,2) 
+       %load(ranksFile);
+       load('ranks_emp1_k15')    
+        for i=1:size(train_labels,2) 
         features = [features , ranks(i,1:numFeatures(subject))];
+         end
     end
+
     
     chosenFeatures = unique(features);
 
@@ -84,8 +85,10 @@ function [ models,chosenFeatures ] = SVMModels( train_ecog_data,train_labels,...
     models = cell(size(trainlabels_decimated,2),1);
     disp 'Generating models';
     for i=1:size(models,1)
-       models{i} = fitrsvm(featureMat,real(trainlabels_decimated(:,i)),'Standardize',true);
-       models{i} = compact(models{i});
+       models{i} = svmtrain(featureMat,real(trainlabels_decimated(:,i)));
+%          models{i} = fitrsvm(featureMat,real(trainlabels_decimated(:,i)),'Standardize',true);
+%        models{i} = compact(models{i});
+
        i
     end
 end
