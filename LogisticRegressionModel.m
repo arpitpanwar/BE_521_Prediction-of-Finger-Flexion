@@ -47,9 +47,11 @@ function [ weight_mat,chosenFeatures, featureMat] = LogisticRegressionModel( tra
     train3_labels(train2_labels>=1) = 2;
     train3_labels(train2_labels<1) = 1;%
 
-    trainlabels_decimated{1} = train_labels1;
-    trainlabels_decimated{2} = train_labels3;
-   
+    if size(train_labels,2) == 5
+        trainlabels_decimated = train_labels1;
+    else
+        trainlabels_decimated = train_labels3;
+    end
    
 %   train_labels = train3_labels;
 
@@ -60,15 +62,15 @@ function [ weight_mat,chosenFeatures, featureMat] = LogisticRegressionModel( tra
     ranks = [];
     
     save_version = 4;  
-    ranksFile = strcat('reductionRanksMovement_', num2str(subject), '_v',num2str(save_version), '.mat');
+    ranksFile = '1';
     disp 'Selecting features from ranks';
     for i = 1:2
         if ~savefileExists(ranksFile)
-            [ranks, features] = reductionRanks(featureMat, trainlabels_decimated{i}, numFeatures(subject), K)
-            save(strcat('reductionRanksMovement_',num2str(subject),'_v',num2str(save_version),'.mat'),'ranks');  
+            [ranks, features] = reductionRanks(featureMat, trainlabels_decimated, numFeatures(subject), K)
+            save(strcat('reductionRanksMovement_',num2str(subject),'_labels_,',size(train_labels,2),'v',num2str(save_version),'.mat'),'ranks');  
         else
             load(ranksFile);
-            for i=1:size(trainlabels_decimated{i},2) 
+            for i=1:size(trainlabels_decimated,2) 
                 features = [features , ranks(i,1:numFeatures(subject))];
             end
         end
@@ -76,8 +78,7 @@ function [ weight_mat,chosenFeatures, featureMat] = LogisticRegressionModel( tra
     
 
     chosenFeatures = unique(features);
-    save(strcat('reductionRanksMovement_',num2str(subject),'_v',num2str(save_version),'.mat'),'ranks','chosenFeatures');  
-
+    strcat('reductionRanksMovement_',num2str(subject),'_labels_,',size(train_labels,2),'v',num2str(save_version),'.mat');
     featureMat = featureMat(:,chosenFeatures);
     featureMat = FeatureHistoryGeneration( featureMat,history );
 
