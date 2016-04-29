@@ -24,11 +24,10 @@ save('FilterWeights_sub1.mat','filterWeights');
 
 pred_ridreg_sub1 = PostFilter(pred_ridreg_sub1,filterWeights);
 
-
 sub1 = mean(diag(corr(pred_ridreg_sub1(:,[1,2,3,5]),trainlabels_sub1(:,[1,2,3,5]))));
 
 
-clearvars traindata_sub1 trainlabels_sub1 testdata_sub1 testduration_sub1 filterWeights;
+clearvars traindata_sub1 trainlabels_sub1 testdata_sub1 testduration_sub1 filterWeights train_limits;
 
 %% Sub 2
 %Get data
