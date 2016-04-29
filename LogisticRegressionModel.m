@@ -1,12 +1,18 @@
 function [ weight_mat,chosenFeatures, featureMat] = LogisticRegressionModel( train_ecog_data,... 
             train_labels,samplingRate,windowSize,displ,subject,history )
  
+    if ~isnumeric(history)           
+        runningCells = history{1};
+        runningTimes = history{2};
+        history = 0;
+    end
+        
     numFeatures = [25, 25, 15];
     wins = NumWins(length(train_ecog_data),samplingRate,windowSize,displ);  
     disp ' ----- '
     disp(strcat('Generating Logistic Regression Model for subject: ',num2str(subject)))
 
-    save_version = 4;  
+    save_version = 5;  
     featureFile = strcat('featuresMovement_', num2str(subject), '_v',num2str(save_version), '.mat');
     features = [];
     if ~savefileExists(featureFile)
@@ -15,31 +21,48 @@ function [ weight_mat,chosenFeatures, featureMat] = LogisticRegressionModel( tra
     else
         load(featureFile);
     end
+    
+    featureMat = FeaturesNormalized(featureMat);
 
 
 %% Decimate the training labels
+    runningTimes = unique(runningTimes);
+    trainlabels_decimated = zeros([int64(length(train_labels)/(displ*10^3)),size(train_labels,2)]);
 
-    train_labels(train_labels>=0.5) = 2;
-    train_labels(train_labels<0.5) = 1; 
+    train_labels1 = train_labels;
+    train_labels1(train_labels>=1/5*max(train_labels,2)) = 2;
+    train_labels1(train_labels<1/5*max(train_labels,2)) = 1; 
     
-    trainlabels_decimated = trainlabelsPreload(train_labels,displ);    
-     
+    train2_labels = train_labels;
+    
+    train2_labels(find(train_labels(runningTimes))) = 2;    
+    train2_labels(find(train_labels(~runningTimes))) = 1;
+
+    train2_labels = sum(train2_labels,2);
+    train3_labels = train2_labels;
+    train3_labels(train2_labels>=1) = 2;
+    train3_labels(train2_labels<1) = 1;
+
+   
+    train_labels = train3_labels;
+    trainlabels_decimated = trainlabelsPreload(train3_labels,displ);
+
      %fun = @(XT,YT,xt,yt)LinearRegressionForPrediction(XT,YT,xt,yt);
     %%  Feature Selection   
     K = 15;
     features = [];
     ranks = [];
     
-    save_version = 1;  
-    ranksFile = strcat('reductionRanksMovement_', num2str(subject), '_v',num2str(save_version), '.mat');
+    save_version = 2;  
+    ranksFile = strcat('reductionRanksMovement_', num2str(subject), '_train3_labels_v',num2str(save_version), '.mat');
     disp 'Selecting features from ranks';
     
-    
+        
     if ~savefileExists(ranksFile)
         [ranks, features] = reductionRanks(featureMat, trainlabels_decimated, numFeatures(subject), K)
-        save(strcat('reductionRanksMovement_',num2str(subject),'_v',num2str(save_version),'.mat'),'ranks');  
+        save(strcat('reductionRanksMovement_',num2str(subject),'_train3_labels_v',num2str(save_version),'.mat'),'ranks');  
     else
-       load(file(ranksFile));
+       load(ranksFile);
     end
     
     for i=1:size(train_labels,2) 
@@ -49,26 +72,22 @@ function [ weight_mat,chosenFeatures, featureMat] = LogisticRegressionModel( tra
     chosenFeatures = unique(features);
 
     featureMat = featureMat(:,chosenFeatures);
-    featureMat = FeaturesNormalized(features);
     featureMat = FeatureHistoryGeneration( featureMat,history );
 
-    trainlabels_decimated(trainlabels_decimated>=1) = 2;
-    trainlabels_decimated(trainlabels_decimated<1) = 1;
-     trainlabels_decimated = round(trainlabels_decimated);
 %     fun = @(XT,YT,xt,yt)LinearRegressionForPrediction(XT,YT,xt,yt);
 
-    weight_mat = zeros([size(featureMat,2)+1,5]);
+    weight_mat = zeros([size(featureMat,2)+1,size(train_labels,2)]);
     
 %% Generating weight matrix   
-    for i=1:5
-    w = mnrfit(featureMat,trainlabels_decimated(:,i),'EstDisp','on');
+
+    for i=1:size(train_labels,2)
+    w = mnrfit(featureMat,round(trainlabels_decimated(:,i)),'EstDisp','on');
        weight_mat(:,i) = w;
         disp 'Done for one finger';
      end
 end
 
  function trainlabels_decimated = trainlabelsPreload(train_labels, displ)
-    trainlabels_decimated = zeros([int64(length(train_labels)/(displ*10^3)),size(train_labels,2)]);
 
     for i=1:size(train_labels,2)
         trainlabels_decimated(:,i) = decimate(train_labels(:,i),displ*10^3);

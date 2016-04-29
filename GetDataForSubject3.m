@@ -23,11 +23,11 @@ function [ traindata,trainlabels,testdata,testDuration ] = GetDataForSubject3(us
 % 
 % testdata_ecog_sub3 = session_sub3_test.data.getvalues(1:round(sr*testDuration),1:64);
 % save('Subject3_data_filtered.mat','testdata_ecog_sub3','trainlabels','traindata_ecog_sub3','testDuration');
-
-load 'Subject3_data_filtered.mat';
-
-testdata = Preprocess(testdata_ecog_sub3);
-traindata = Preprocess(traindata_ecog_sub3);
+load 'Subject3_data.mat';
+%testdata = Preprocess(testdata);
+%traindata = Preprocess(traindata);
+%save('Subject3_data.mat','testdata_ecog_sub3','trainlabels','traindata_ecog_sub3','testDuration');
+%load('Subject3_data.mat');
 
 end
 

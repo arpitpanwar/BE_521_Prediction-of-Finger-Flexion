@@ -28,8 +28,8 @@ function [ traindata,trainlabels,testdata,testDuration ] = GetDataForSubject1(us
 % 
 % save('Subject1_data.mat','testdata_ecog_sub1','trainlabels','traindata_ecog_sub1','testDuration');
 load 'Subject1_data.mat';
-testdata = Preprocess(testdata_ecog_sub1);
-traindata = Preprocess(traindata_ecog_sub1);
+%testdata = Preprocess(testdata);
+%traindata = Preprocess(traindata);
 
    
 

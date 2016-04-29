@@ -25,7 +25,7 @@ filteredData_300 = filter(num.Numerator,1,input_mat);
 
 % Generating features
 for i=0:len-1
-    disp(strcat('Generating Features for channel - ',num2str(i))
+    disp(strcat('Generating Features for channel - ',num2str(i)))
     %Mean voltage in time domain
     counter =1;
     curr = input_mat(:,i+1);
