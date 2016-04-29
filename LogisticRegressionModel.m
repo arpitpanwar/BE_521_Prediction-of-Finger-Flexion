@@ -63,11 +63,12 @@ function [ weight_mat,chosenFeatures, featureMat] = LogisticRegressionModel( tra
         save(strcat('reductionRanksMovement_',num2str(subject),'_train3_labels_v',num2str(save_version),'.mat'),'ranks');  
     else
        load(ranksFile);
+    
+        for i=1:size(train_labels,2) 
+            features = [features , ranks(i,1:numFeatures(subject))];
+        end
     end
     
-    for i=1:size(train_labels,2) 
-        features = [features , ranks(i,1:numFeatures(subject))];
-    end
     
     chosenFeatures = unique(features);
 

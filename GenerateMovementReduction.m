@@ -3,6 +3,7 @@ function [weight_mat,predictions] = GenerateMovementReduction(traindata, ...
     
     runningTimes = [];
     runningCells = {};
+    trainlabels = sum(trainlabels,2);
     for i = 1:size(trainlabels,2)
         [ Times allTimes ] = MovementDetection(trainlabels(:,i), traindata, displ, pre, post);
         runningCells{length(runningCells)+1} = Times;
@@ -23,7 +24,7 @@ running{2} = runningTimes;
 
 
 	predictions{1} = Prediction_LogReg(weight_mat,0,train_movements,...
-            sr,testDuration,windowSize,displ,chosenFeatures,subject, history);
+            sr,310,windowSize,displ,chosenFeatures,subject, history);
        
     predictions{2} = Prediction_LogReg(weight_mat,0,testdata,...
             sr,testDuration,windowSize,displ,chosenFeatures,subject, history);
@@ -35,7 +36,7 @@ running{2} = runningTimes;
 
 
 	predictions{1} = Prediction_SVM(models,0,train_movements,...
-            sr,testDuration,windowSize,displ,chosenFeatures,subject, history);
+            sr,310,windowSize,displ,chosenFeatures,subject, history);
        
     predictions{2} = Prediction_SVM(models,0,testdata,...
             sr,testDuration,windowSize,displ,chosenFeatures,subject, history);

@@ -1,7 +1,7 @@
 function [ pred_rounded ] = Prediction_LogReg( weight_mat,train_limits,... 
         test_data,samplingRate,duration,windowSize,displ,chosenFeatures,subject, history )
     
- wins = NumWins(length(test_data),samplingRate,windowSize,displ);
+    wins = NumWins(length(test_data),samplingRate,windowSize,displ);
 
     disp 'Generating features while prediction';
     featureMat = FeatureGeneration(test_data,wins,samplingRate,windowSize,displ);
@@ -39,13 +39,16 @@ function [ pred_rounded ] = Prediction_LogReg( weight_mat,train_limits,...
     pred_splined = zeros([length(test_data),size(pred,2)]);
     len = length(pred);
     stepval = (duration)/len;
+    
     for i=1:size(pred,2)
         pred_splined(:,i) = spline((stepval:stepval:duration),pred(:,i),(0.001:0.001:duration));
     end
 
 %     %Rounding
 %     pred_rounded = round(pred_splined);
+
     pred_rounded = pred_splined;
+    train_limits = [0, 1];
     %Setting limits
     for i=1:size(pred,2)
         minimum = train_limits(i,1);
