@@ -1,7 +1,6 @@
 function [filtered,weights] = GetFilterWeights(signal,modifiedsignal)
 
-   lmsf = dsp.LMSFilter('Length',10,'Method','Normalized LMS', ...
-       'StepSize',1);
+   lmsf = dsp.LMSFilter('Method','Sign-Error LMS');
    weights = [];
    filtered = [];
    for i=1:size(signal,2)

@@ -1,9 +1,10 @@
 function [ out ] = Preprocess( data )
-	
-   % out = (data - mean(mean(data)));%/(std(std(data)));
+
+   data = (data - mean(mean(data)));%/(std(std(data)));
    out = zeros(size(data));
    for i=1:size(data,2)
-	out(:,i) = smooth(data(:,i),'lowess'); % - mean(mean(data));
+	out(:,i) = smooth(data(:,i),9,'loess'); % - mean(mean(data));
    end
+   
 end
-
+    

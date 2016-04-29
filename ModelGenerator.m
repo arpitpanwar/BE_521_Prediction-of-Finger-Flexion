@@ -53,7 +53,7 @@ pred_sub1 = pred_ridreg_sub1;%.* pred_logreg_sub1;
 
 load('FilterWeights_sub1.mat');
 
-%pred_sub1 = PostFilter(pred_sub1,filterWeights);
+pred_sub1 = PostFilter(pred_sub1,filterWeights);
 
 clearvars traindata_sub1 trainlabels_sub1 testdata_sub1 testduration_sub1 filterWeights;
 
@@ -89,7 +89,7 @@ pred_sub2 = pred_ridreg_sub2;%.* pred_logreg_sub2;
 
 load('FilterWeights_sub2.mat');
 
-%pred_sub2 = PostFilter(pred_sub2,filterWeights);
+pred_sub2 = PostFilter(pred_sub2,filterWeights);
 
 clearvars traindata_sub2 trainlabels_sub2 testdata_sub2 testduration_sub2 filterWeights;
 
@@ -126,7 +126,7 @@ pred_sub3 = pred_ridreg_sub3;%.* pred_logreg_sub3;
 
 load('FilterWeights_sub3.mat');
 
-%pred_sub3 = GetFilterWeights(trainlabels_sub3,pred_sub3);
+pred_sub3 = PostFilter(pred_sub3,filterWeights);
 
 clearvars traindata_sub3 trainlabels_sub3 testdata_sub3 testduration_sub3 filterWeights;
 

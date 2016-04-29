@@ -22,7 +22,7 @@ testDuration = length(traindata_sub1)/sr;
 [~,filterWeights] = GetFilterWeights(trainlabels_sub1,pred_ridreg_sub1);
 save('FilterWeights_sub1.mat','filterWeights');
 
-%pred_ridreg_sub1 = PostFilter(pred_ridreg_sub1,filterWeights);
+pred_ridreg_sub1 = PostFilter(pred_ridreg_sub1,filterWeights);
 
 
 sub1 = mean(diag(corr(pred_ridreg_sub1(:,[1,2,3,5]),trainlabels_sub1(:,[1,2,3,5]))));
@@ -47,12 +47,12 @@ GenerateRidgeRegression(traindata_sub2,...
 [~,filterWeights] = GetFilterWeights(trainlabels_sub2,pred_ridreg_sub2);
 save('FilterWeights_sub2.mat','filterWeights');
 
-%pred_ridreg_sub2 = PostFilter(pred_ridreg_sub2,filterWeights);
+pred_ridreg_sub2 = PostFilter(pred_ridreg_sub2,filterWeights);
 
 
 sub2 = mean(diag(corr(pred_ridreg_sub2(:,[1,2,3,5]),trainlabels_sub2(:,[1,2,3,5]))));
 
-%clearvars traindata_sub2 trainlabels_sub2 testdata_sub2 testduration_sub2;
+clearvars traindata_sub2 trainlabels_sub2 testdata_sub2 testduration_sub2 filterWeights;
 
 %Get data
 [traindata_sub3,trainlabels_sub3,testdata_sub3,testduration_sub3] = GetDataForSubject3(user);
@@ -69,9 +69,9 @@ GenerateRidgeRegression(traindata_sub3,...
 [~,filterWeights] = GetFilterWeights(trainlabels_sub3,pred_ridreg_sub3);
 save('FilterWeights_sub3.mat','filterWeights');
 
-%pred_ridreg_sub3 = PostFilter(pred_ridreg_sub3,filterWeights);
+pred_ridreg_sub3 = PostFilter(pred_ridreg_sub3,filterWeights);
 
 sub3 = mean(diag(corr(pred_ridreg_sub3(:,[1,2,3,5]),trainlabels_sub3(:,[1,2,3,5]))));
-%clearvars traindata_sub3 trainlabels_sub3 testdata_sub3 testduration_sub3;
+clearvars traindata_sub3 trainlabels_sub3 testdata_sub3 testduration_sub3 filterWeights;
 
 finalcorr = mean([sub1,sub2,sub3]);
