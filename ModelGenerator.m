@@ -13,14 +13,13 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Generate predictions for subject 1
 
-if subject == 1 || subject == 0
     subject = 1;
-    history = 45;      
+    history = 25;      
 
 %% Get data
     [traindata_sub1,trainlabels_sub1,testdata_sub1,testduration_sub1] = GetDataForSubject1(user);
 
-[weight_mat,predictions] = GenerateMovementReduction(traindata_sub1, ...
+[weight_mat,predictions_1] = GenerateMovementReduction(traindata_sub1, ...
         trainlabels_sub1,sr,windowSize,displ,testdata_sub1,testduration_sub1,subject, 0, 1000,1200);
     
 %[filteredlabels,filterWeights] = PreFilter(trainlabels_sub1);
@@ -60,18 +59,18 @@ if subject == 1 || subject == 0
 %[models_sub1,pred_ensem_sub1]= GenerateEnsembleLearning(traindata_sub1,trainlabels_sub1,sr,windowSize,displ,testdata_sub1,testduration_sub1,1);
 
 
-pred_sub1 = pred_logreg_sub1;%.* pred_logreg_sub1;
+pred_sub1 = predictions_1;%.* pred_logreg_sub1;
 
-clearvars traindata_sub1 trainlabels_sub1 testdata_sub1 testduration_sub1;
-end
+clearvars traindata_sub1 testdata_sub1 testduration_sub1;
+
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Generate predictions for subject 2
 
-if subject == 2 || subject == 0
     subject = 2 ;
     history = 25;
+
 [traindata_sub2,trainlabels_sub2,testdata_sub2,testduration_sub2] = GetDataForSubject2(user);
 
 
@@ -102,15 +101,14 @@ if subject == 2 || subject == 0
 %Ensemble Learning
 %[models_sub2,pred_ensem_sub2]= GenerateEnsembleLearning(traindata_sub2,trainlabels_sub2,sr,windowSize,displ,testdata_sub2,testduration_sub2,2);
 
-pred_sub2 = pred_logreg_sub2;%.* pred_logreg_sub2;
+pred_sub2 = predictions_2;%.* pred_logreg_sub2;
 
 
-clearvars traindata_sub2 trainlabels_sub2 testdata_sub2 testduration_sub2;
-end
+clearvars traindata_sub2 testdata_sub2 testduration_sub2;
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Generate predictions for subject 3
-if subject == 3 || subject == 0
 subject = 3;
 history = 25
     [traindata_sub3,trainlabels_sub3,testdata_sub3,testduration_sub3] = GetDataForSubject3(user);
@@ -141,26 +139,32 @@ history = 25
 %Ensemble Learning
 %[model_sub3,pred_ensem_sub3]= GenerateEnsembleLearning(traindata_sub3,trainlabels_sub3,sr,windowSize,displ,testdata_sub3,testduration_sub3,3);
 
-pred_sub3 = pred_logreg_sub3;%.* pred_logreg_sub3;
+pred_sub3 = predictions_3;%.* pred_logreg_sub3;
 
-clearvars traindata_sub3 trainlabels_sub3 testdata_sub3 testduration_sub3;
+clearvars traindata_sub3 testdata_sub3 testduration_sub3;
 
 %[model_ensemble_learning,predictions_ensemble] = GenerateEnsembleLearning();
 %[model_logistic_regression,predictions_logistic_reg] = GenerateLogisticRegression();
-end
 
-if subject == 0
+
     %% Gather predictions
     predicted_dg = cell(3,1);
     predicted_dg{1} = pred_sub1;
     predicted_dg{2} = pred_sub2;
     predicted_dg{3} = pred_sub3;
 
-weights_pred_linreg = cell(3,1);
-weights_pred_linreg{1} = weights_sub1_log;
-weights_pred_linreg{2} = weights_sub2_log;
-weights_pred_linreg{3} = weights_sub3_log;
+    for i = 1:length(predicted_dg{1})
+        predicted_dg{1}(i,:) =  predicted_dg{1}(i,:) * p1(i);
+        predicted_dg{2}(i,:) =  predicted_dg{2}(i,:) * p2(i);
+        predicted_dg{3}(i,:) =  predicted_dg{3}(i,:) * p3(i);
 
-end
+    end
+    
+    
+% weights_pred_linreg = cell(3,1);
+% weights_pred_linreg{1} = weights_sub1_log;
+% weights_pred_linreg{2} = weights_sub2_log;
+% weights_pred_linreg{3} = weights_sub3_log;
+% 
 
-%save('LeaderboardPrediction_linregfiltering.mat','predicted_dg');
+save('LeaderboardPrediction_logregMovementfiltering.mat','predicted_dg');
