@@ -39,9 +39,9 @@ function [ pred_rounded ] = Prediction_LogReg( weight_mat,train_limits,...
     featureMat = FeaturesNormalized(featureMat);
 
     featureMat = FeatureHistoryGeneration( featureMat,history );
-    
-     
-     pred = zeros([size(featureMat,1),5]);
+   
+
+     pred = zeros([size(featureMat,1),size(weight_mat,2)]);
      disp 'Predicting logregg';
      for i=1:size(pred,2)
          p = mnrval(weight_mat(:,i),featureMat);
@@ -67,7 +67,7 @@ function [ pred_rounded ] = Prediction_LogReg( weight_mat,train_limits,...
 
     %Setting limits
     for i=1:size(pred,2)
-        minimum  = -1;
+        minimum  = 0;
         pred_remove = find(pred_rounded < minimum);
         pred_rounded(pred_remove) = minimum;
 
@@ -75,7 +75,8 @@ function [ pred_rounded ] = Prediction_LogReg( weight_mat,train_limits,...
         pred_remove = find(pred_rounded > maximum);
         pred_rounded(pred_remove) = maximum;
     end
-
+    
+    
 
 end
 

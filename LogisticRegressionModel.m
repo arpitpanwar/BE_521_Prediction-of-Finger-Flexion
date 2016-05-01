@@ -13,7 +13,7 @@ function [ weight_mat,chosenFeatures, featureMat] = LogisticRegressionModel( tra
     disp(strcat('Generating Logistic Regression Model for subject: ',num2str(subject)))
 
     save_version = 5;  
-    featureFile = strcat('featuresMovement_', num2str(subject), '_v',num2str(save_version), '.mat');
+    featureFile = strcat('featuresMovement_', num2str(subject), '_v',num2str(save_version), '_2.mat');
     features = [];
     if ~savefileExists(featureFile)
         [featureMat] = FeatureGeneration(train_ecog_data,wins,samplingRate,windowSize,displ);
@@ -50,7 +50,7 @@ function [ weight_mat,chosenFeatures, featureMat] = LogisticRegressionModel( tra
     if size(train_labels,2) == 5
         trainlabels_decimated = train_labels1;
     else
-        trainlabels_decimated = train_labels3;
+        trainlabels_decimated = train3_labels;
     end
    
 %   train_labels = train3_labels;
@@ -61,37 +61,32 @@ function [ weight_mat,chosenFeatures, featureMat] = LogisticRegressionModel( tra
     features = [];
     ranks = [];
     
-    save_version = 4;  
-    ranksFile = '1';
+    save_version = 5;  
+     ranksFile = strcat('red_',num2str(subject),'_',num2str(size(train_labels,2)),'_2.mat');
     disp 'Selecting features from ranks';
-    for i = 1:2
-        if ~savefileExists(ranksFile)
-            [ranks, features] = reductionRanks(featureMat, trainlabels_decimated, numFeatures(subject), K)
-            save(strcat('reductionRanksMovement_',num2str(subject),'_labels_,',size(train_labels,2),'v',num2str(save_version),'.mat'),'ranks');  
-        else
-            load(ranksFile);
-            for i=1:size(trainlabels_decimated,2) 
-                features = [features , ranks(i,1:numFeatures(subject))];
-            end
+    if ~savefileExists(ranksFile)
+        [ranks, features] = reductionRanks(featureMat, trainlabels_decimated, numFeatures(subject), K);
+        save(strcat('red_',num2str(subject),'_',num2str(size(train_labels,2)),'_2.mat'),'ranks');  
+    else
+        load(ranksFile);
+        for i=1:size(trainlabels_decimated,2) 
+            features = [features , ranks(i,1:numFeatures(subject))];
         end
     end
-    
-
     chosenFeatures = unique(features);
-    strcat('reductionRanksMovement_',num2str(subject),'_labels_,',size(train_labels,2),'v',num2str(save_version),'.mat');
     featureMat = featureMat(:,chosenFeatures);
-    featureMat = FeatureHistoryGeneration( featureMat,history );
+    featureMat = FeatureHistoryGeneration( featureMat,history);
 
 %     fun = @(XT,YT,xt,yt)LinearRegressionForPrediction(XT,YT,xt,yt);
 
     weight_mat = zeros([size(featureMat,2)+1,size(trainlabels_decimated,2)]);
     
 %% Generating weight matrix   
-
+disp('Generating Weight Matrix')
     for i=1:size(trainlabels_decimated,2)
-        w = mnrfit(featureMat,round(trainlabels_decimated(:,i)))
+        i
+        w = mnrfit(featureMat,round(trainlabels_decimated(:,i)));
         weight_mat(:,i) = w;
-        disp 'Done for one finger';
      end
 end
 
