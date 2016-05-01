@@ -5,6 +5,7 @@ function [ pred_rounded ] = Prediction_LogReg( weight_mat,train_limits,...
 
     disp 'Generating features while prediction';
     featureMat = FeatureGeneration(test_data,wins,samplingRate,windowSize,displ);
+    featureMat = zscore(featureMat);
     %save(strcat('Testing_features_sub',num2str(subject),'.mat'),'featureMat');
     %load(strcat('Testing_features_sub',num2str(subject),'.mat'));
 
@@ -25,7 +26,7 @@ function [ pred_rounded ] = Prediction_LogReg( weight_mat,train_limits,...
     pred = zeros([size(featureMat,1),5]);
     disp 'Predicting logregg';
     for i=1:5
-     p = mnrval(weight_mat(:,i),featureMat,'confidence',0.8);
+     p = mnrval(weight_mat(:,i),featureMat,'confidence',0.95);
      [~,id] = max(p,[],2);
      pred(:,i) = id-1;
     end

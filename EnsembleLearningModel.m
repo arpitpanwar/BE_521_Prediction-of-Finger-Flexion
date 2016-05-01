@@ -4,6 +4,7 @@ function [ models,chosenFeatures ] = EnsembleLearningModel( train_ecog_data,trai
 
 disp 'Generating feature matrix in ridge regression model';
 featureMat = FeatureGeneration(train_ecog_data,wins,samplingRate,windowSize,displ);
+featureMat = zscore(featureMat);
 save(strcat('features_ensemble_sub',num2str(subject),'.mat'),'featureMat');
 
 switch subject
@@ -23,6 +24,8 @@ end
 
 clearvars curr;
 
+    threshold = (1/5)*max(train_labels);
+
 
 %Decimate the training labels
 trainlabels_decimated = zeros([int64(length(train_labels)/(displ*10^3)),5]);
@@ -34,10 +37,12 @@ end
 %train_labl_test = trainlabels_decimated;
 
 %trainlabels_decimated = [train_labl_test(1:end-2,:);train_labl_test(length(trainlabels_decimated),:)];
-split_at = 0.4;
+
 trainlabels_decimated = trainlabels_decimated(1:end-1,:);
-trainlabels_decimated(trainlabels_decimated>=split_at) = 2;
-trainlabels_decimated(trainlabels_decimated<split_at) = 1;
+ for i=1:length(threshold)
+        trainlabels_decimated(trainlabels_decimated(:,i)>=threshold(i),i) = 1;
+        trainlabels_decimated(trainlabels_decimated(:,i)<threshold(i),i) = 0; 
+  end 
 
 %     fun = @(XT,YT,xt,yt)LinearRegressionForPrediction(XT,YT,xt,yt);
 
@@ -65,7 +70,7 @@ featureMat = featureMat(:,chosenFeatures);
 
 disp 'Generating feature history';
 
-featureMat = FeatureHistoryGeneration( featureMat,history );
+%featureMat = FeatureHistoryGeneration( featureMat,history );
           
     
     models = cell(5,1);

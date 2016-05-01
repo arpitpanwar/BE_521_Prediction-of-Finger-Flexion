@@ -4,9 +4,10 @@ function [ pred_rounded ] = Prediction_Ensemble(models,train_limits,test_data,sa
 
     disp 'Generating features while prediction';
     featureMat = FeatureGeneration(test_data,wins,samplingRate,windowSize,displ);
-        
+    
+    featureMat = zscore(featureMat);
     featureMat = featureMat(:,chosenFeatures);
-    featureMat = FeatureHistoryGeneration( featureMat,history );
+    %featureMat = FeatureHistoryGeneration( featureMat,history );
     
     disp 'Predicting Ensemble';
     

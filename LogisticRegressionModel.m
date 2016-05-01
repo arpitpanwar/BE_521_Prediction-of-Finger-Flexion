@@ -5,6 +5,7 @@ function [ weight_mat,chosenFeatures ] = LogisticRegressionModel( train_ecog_dat
     
     disp 'Generating feature matrix in logistic regression model';
         featureMat = FeatureGeneration(train_ecog_data,wins,samplingRate,windowSize,displ);
+        featureMat = zscore(featureMat);
 %        save(strcat('features_emp',num2str(subject),'_k15.mat'),'featureMat');
     
     switch subject
@@ -24,8 +25,7 @@ function [ weight_mat,chosenFeatures ] = LogisticRegressionModel( train_ecog_dat
 
     clearvars curr;
     
-     train_labels(train_labels>=0.4) = 2;
-     train_labels(train_labels<0.4) = 1; 
+    threshold = (1/5)*max(train_labels);
     %Decimate the training labels
     trainlabels_decimated = zeros([int64(length(train_labels)/(displ*10^3)),5]);
 
@@ -37,7 +37,11 @@ function [ weight_mat,chosenFeatures ] = LogisticRegressionModel( train_ecog_dat
 
     %trainlabels_decimated = [train_labl_test(1:end-2,:);train_labl_test(length(trainlabels_decimated),:)];
      trainlabels_decimated = trainlabels_decimated(1:end-1,:);
-     trainlabels_decimated = round(trainlabels_decimated);
+     
+     for i=1:length(threshold)
+        trainlabels_decimated(trainlabels_decimated(:,i)>=threshold(i),i) = 2;
+        trainlabels_decimated(trainlabels_decimated(:,i)<threshold(i),i) = 1; 
+     end 
 %     fun = @(XT,YT,xt,yt)LinearRegressionForPrediction(XT,YT,xt,yt);
      
     disp 'Selecting features';
