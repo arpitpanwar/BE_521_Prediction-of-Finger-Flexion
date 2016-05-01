@@ -25,7 +25,7 @@ function [ pred_rounded ] = Prediction_LogReg( weight_mat,train_limits,...
     pred = zeros([size(featureMat,1),5]);
     disp 'Predicting logregg';
     for i=1:5
-     p = mnrval(weight_mat(:,i),featureMat);
+     p = mnrval(weight_mat(:,i),featureMat,'confidence',0.8);
      [~,id] = max(p,[],2);
      pred(:,i) = id-1;
     end

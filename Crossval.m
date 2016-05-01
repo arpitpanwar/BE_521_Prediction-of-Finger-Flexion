@@ -18,13 +18,29 @@ testDuration = length(traindata_sub1)/sr;
 
 [weights_sub1,pred_ridreg_sub1]= GenerateRidgeRegression(traindata_sub1,...
     trainlabels_sub1,sr,windowSize,displ,traindata_sub1,testDuration,1,25);
+    
+%LogisticRegression
+[weights_sub1_log,pred_logreg_sub1]= GenerateLogisticRegression(traindata_sub1,...
+        trainlabels_sub1,sr,windowSize,displ,traindata_sub1,testDuration,1,25);
 
-[~,filterWeights] = GetFilterWeights(trainlabels_sub1,pred_ridreg_sub1);
+%Ensemble Learning
+[models_sub1,pred_ensem_sub1]= GenerateEnsembleLearning(traindata_sub1,trainlabels_sub1,sr,windowSize,displ,traindata_sub1,testDuration,1,25);
+
+%SVM
+[models_sub1,pred_svm_sub1]= GenerateSVM(traindata_sub1,trainlabels_sub1,sr,windowSize,displ,traindata_sub1,testDuration, 1, 25);
+
+pred_classifier_sub1 = mode([round(pred_logreg_sub1),round(pred_ensem_sub1),round(pred_svm_sub1)]);
+	
+pred_cv_sub1 = pred_ridreg_sub1.*pred_classifier_sub1;
+
+	
+[~,filterWeights] = GetFilterWeights(trainlabels_sub1,pred_cv_sub1);
 save('FilterWeights_sub1.mat','filterWeights');
 
-pred_ridreg_sub1 = PostFilter(pred_ridreg_sub1,filterWeights);
 
-sub1 = mean(diag(corr(pred_ridreg_sub1(:,[1,2,3,5]),trainlabels_sub1(:,[1,2,3,5]))));
+pred_cv_sub1 = PostFilter(pred_cv_sub1,filterWeights);
+
+sub1 = mean(diag(corr(pred_cv_sub1(:,[1,2,3,5]),trainlabels_sub1(:,[1,2,3,5]))));
 
 
 clearvars traindata_sub1 trainlabels_sub1 testdata_sub1 testduration_sub1 filterWeights train_limits;
@@ -42,14 +58,28 @@ clearvars traindata_sub1 trainlabels_sub1 testdata_sub1 testduration_sub1 filter
 GenerateRidgeRegression(traindata_sub2,...
    trainlabels_sub2,sr,windowSize,displ,traindata_sub2,testDuration,2,25);
 
+%Logistic Regression   
+[weights_sub2_log,pred_logreg_sub2]= ...
+    GenerateLogisticRegression(traindata_sub2,trainlabels_sub2,sr,...
+        windowSize,displ,traindata_sub2,testDuration,2,25);
+	
+%Ensemble Learning
+[models_sub2,pred_ensem_sub2]= GenerateEnsembleLearning(traindata_sub2,trainlabels_sub2,sr,windowSize,displ,traindata_sub2,testDuration,2,25);
 
-[~,filterWeights] = GetFilterWeights(trainlabels_sub2,pred_ridreg_sub2);
+%SVM
+[models_sub2,pred_svm_sub2]= GenerateSVM(traindata_sub2,trainlabels_sub2,sr,windowSize,displ,traindata_sub2,testDuration,2, 25);
+
+pred_classifier_sub2 = mode([round(pred_logreg_sub2),round(pred_ensem_sub2),round(pred_svm_sub2)]);
+
+pred_cv_sub2 = pred_ridreg_sub2.*pred_classifier_sub2;
+
+[~,filterWeights] = GetFilterWeights(trainlabels_sub2,pred_cv_sub2);
 save('FilterWeights_sub2.mat','filterWeights');
 
-pred_ridreg_sub2 = PostFilter(pred_ridreg_sub2,filterWeights);
+pred_cv_sub2 = PostFilter(pred_cv_sub2,filterWeights);
 
 
-sub2 = mean(diag(corr(pred_ridreg_sub2(:,[1,2,3,5]),trainlabels_sub2(:,[1,2,3,5]))));
+sub2 = mean(diag(corr(pred_cv_sub2(:,[1,2,3,5]),trainlabels_sub2(:,[1,2,3,5]))));
 
 clearvars traindata_sub2 trainlabels_sub2 testdata_sub2 testduration_sub2 filterWeights;
 
@@ -64,13 +94,27 @@ clearvars traindata_sub2 trainlabels_sub2 testdata_sub2 testduration_sub2 filter
 [weights_sub3,pred_ridreg_sub3]= ...
 GenerateRidgeRegression(traindata_sub3,...
    trainlabels_sub3,sr,windowSize,displ,traindata_sub3,length(traindata_sub3)/sr,3,25);
+   
+[weights_sub3_log,pred_logreg_sub3]= GenerateLogisticRegression(traindata_sub3,...
+        trainlabels_sub3,sr,windowSize,displ,traindata_sub3,length(traindata_sub3)/sr,3,25);
+	
+%Ensemble Learning
+[model_sub3,pred_ensem_sub3]= GenerateEnsembleLearning(traindata_sub3,trainlabels_sub3,sr,windowSize,displ,traindata_sub3,length(traindata_sub3)/sr,3,25);
 
-[~,filterWeights] = GetFilterWeights(trainlabels_sub3,pred_ridreg_sub3);
+%SVM
+[models_sub3,pred_svm_sub3]= GenerateSVM(traindata_sub3,trainlabels_sub3,sr,windowSize,displ,traindata_sub3,length(traindata_sub3)/sr,3, 25);
+	
+pred_classifier_sub3 = mode([round(pred_logreg_sub3),round(pred_ensem_sub3),round(pred_svm_sub3)]);
+
+pred_cv_sub3 = pred_ridreg_sub3.*pred_classifier_sub3;
+
+[~,filterWeights] = GetFilterWeights(trainlabels_sub3,pred_cv_sub3);
 save('FilterWeights_sub3.mat','filterWeights');
 
-pred_ridreg_sub3 = PostFilter(pred_ridreg_sub3,filterWeights);
+pred_cv_sub3 = PostFilter(pred_cv_sub3,filterWeights);
 
-sub3 = mean(diag(corr(pred_ridreg_sub3(:,[1,2,3,5]),trainlabels_sub3(:,[1,2,3,5]))));
+sub3 = mean(diag(corr(pred_cv_sub3(:,[1,2,3,5]),trainlabels_sub3(:,[1,2,3,5]))));
+
 clearvars traindata_sub3 trainlabels_sub3 testdata_sub3 testduration_sub3 filterWeights;
 
 finalcorr = mean([sub1,sub2,sub3]);

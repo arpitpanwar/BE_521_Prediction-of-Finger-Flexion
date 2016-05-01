@@ -21,7 +21,9 @@ load 'SavedModels.mat';
 % Predict using linear predictor for each subject
 %create cell array with one element for each subject
 predicted_dg = cell(3,1);
-
+history = 25;
+windowSize = 0.08;
+displ = 0.04;
 %for each subject
 for subj = 1:3 
     
@@ -32,9 +34,31 @@ for subj = 1:3
     
     duration = length(testset)/10^3;
     
-    yhat_linreg = Prediction_LinearReg(mdl_lin_reg{subj},train_limits,testset,1000,duration);
+    testset = Preprocess(testset);
     
+    weight = weights_pred_ridreg{subj};
     
-    predicted_dg{subj} = yhat_linreg;
+    load(strcat('Trainlimits_sub',num2str(subj),'.mat'));
+    load(strcat('chosenfeatures_sub',num2str(subj),'.mat'));
+    
+    switch subj
+        case 1
+            history = 15;
+        case 2
+            history = 10;
+        case 3
+            history = 25;
+    end
+    
+    predictions = Prediction_Ridge(weight,train_limits, testset,sr,duration,...
+                    windowSize,displ,chosenFeatures,history,subj);
+    
+    load(strcat('FilterWeights_sub',num2str(subj),'.mat'));
+    
+   % predictions = PostFilter(predictions,filterWeights);
+    
+    clearvars filterWeights train_limits weight chosenFeatures;
+    
+    predicted_dg{subj} = predictions;
 end
 

@@ -11,15 +11,15 @@ function [ weight_mat,chosenFeatures ] = LinearRegressionModel( train_ecog_data,
         case 1
           load 'features_emp1_k15.mat';
           load('ranks_emp1_k15.mat');
-            numFeatures = 10;
+            numFeatures = 25;
         case 2
           load 'features_emp2_k15.mat';
           load('ranks_emp2_k15.mat');
-            numFeatures = 20;
+            numFeatures = 25;
         case 3
           load 'features_emp3_k15.mat';
           load('ranks_emp3_k15.mat');
-            numFeatures = 10;
+            numFeatures = 15;
     end
 
     clearvars curr;
@@ -76,10 +76,14 @@ function [ weight_mat,chosenFeatures ] = LinearRegressionModel( train_ecog_data,
 %         end
 %         weight_mat(:,i) = B(:,find(max(c)));
 %     end
-    
+    weight_mat = zeros([size(featureMat,2),5]);
+     for i=1:5
+        mdl = lasso(featureMat,trainlabels_decimated(:,i)); 
+        weight_mat(:,i) = mdl(:,1);
+     end
     
     %Generating weight matrix
-    weight_mat = (featureMat'*featureMat) \ (featureMat'*trainlabels_decimated); 
+    %weight_mat = (featureMat'*featureMat) \ (featureMat'*trainlabels_decimated); 
 
 end
 

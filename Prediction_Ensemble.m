@@ -1,11 +1,12 @@
-function [ pred_rounded ] = Prediction_Ensemble(models,train_limits,test_data,samplingRate,duration,windowSize,displ,chosenFeatures )
+function [ pred_rounded ] = Prediction_Ensemble(models,train_limits,test_data,samplingRate,duration,windowSize,displ,chosenFeatures,history,subject  )
     
-    wins = NumWins(length(test_data),samplingRate,windowSize,displ);
+ wins = NumWins(length(test_data),samplingRate,windowSize,displ);
 
+    disp 'Generating features while prediction';
     featureMat = FeatureGeneration(test_data,wins,samplingRate,windowSize,displ);
-   
-    
+        
     featureMat = featureMat(:,chosenFeatures);
+    featureMat = FeatureHistoryGeneration( featureMat,history );
     
     disp 'Predicting Ensemble';
     

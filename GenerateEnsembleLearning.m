@@ -1,6 +1,6 @@
-function [ models,predictions ] = GenerateEnsembleLearning(traindata,trainlabels,sr,windowSize,displ,testdata,testDuration,subject )
+function [ models,predictions ] = GenerateEnsembleLearning(traindata,trainlabels,sr,windowSize,displ,testdata,testDuration,subject,history )
 
- [models,chosenFeatures] = EnsembleLearningModel(traindata,trainlabels,sr,windowSize,displ,subject);
+ [models,chosenFeatures] = EnsembleLearningModel(traindata,trainlabels,sr,windowSize,displ,subject,history);
        
     train_limits = zeros([5,2]);
     
@@ -10,7 +10,7 @@ function [ models,predictions ] = GenerateEnsembleLearning(traindata,trainlabels
     end
 
     %Predicting
-    predictions = Prediction_Ensemble(models,train_limits,testdata,sr,testDuration,windowSize,displ,chosenFeatures);
+    predictions = Prediction_Ensemble(models,train_limits,testdata,sr,testDuration,windowSize,displ,chosenFeatures,history,subject);
 
 end
 

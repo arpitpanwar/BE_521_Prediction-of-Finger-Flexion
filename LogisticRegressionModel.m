@@ -4,28 +4,28 @@ function [ weight_mat,chosenFeatures ] = LogisticRegressionModel( train_ecog_dat
         wins = NumWins(length(train_ecog_data),samplingRate,windowSize,displ);
     
     disp 'Generating feature matrix in logistic regression model';
-%        featureMat = FeatureGeneration(train_ecog_data,wins,samplingRate,windowSize,displ);
+        featureMat = FeatureGeneration(train_ecog_data,wins,samplingRate,windowSize,displ);
 %        save(strcat('features_emp',num2str(subject),'_k15.mat'),'featureMat');
     
     switch subject
         case 1
-          load 'features_emp1_k15.mat';
+%          load 'features_emp1_k15.mat';
 %          load('ranks_emp1_k15.mat');
             numFeatures = 25;
         case 2
-          load 'features_emp2_k15.mat';
+%          load 'features_emp2_k15.mat';
 %          load('ranks_emp2_k15.mat');
             numFeatures = 25;
         case 3
-          load 'features_emp3_k15.mat';
+%          load 'features_emp3_k15.mat';
 %          load('ranks_emp3_k15.mat');
             numFeatures = 15;
     end
 
     clearvars curr;
     
-     train_labels(train_labels>=0.5) = 2;
-     train_labels(train_labels<0.5) = 1; 
+     train_labels(train_labels>=0.4) = 2;
+     train_labels(train_labels<0.4) = 1; 
     %Decimate the training labels
     trainlabels_decimated = zeros([int64(length(train_labels)/(displ*10^3)),5]);
 
