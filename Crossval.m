@@ -20,16 +20,16 @@ testDuration = length(traindata_sub1)/sr;
     trainlabels_sub1,sr,windowSize,displ,traindata_sub1,testDuration,1,25);
     
 %LogisticRegression
-[weights_sub1_log,pred_logreg_sub1]= GenerateLogisticRegression(traindata_sub1,...
-        trainlabels_sub1,sr,windowSize,displ,traindata_sub1,testDuration,1,25);
-
-%Ensemble Learning
-[models_sub1,pred_ensem_sub1]= GenerateEnsembleLearning(traindata_sub1, ...
-    trainlabels_sub1,sr,windowSize,displ,traindata_sub1,testDuration,1,25);
+% [weights_sub1_log,pred_logreg_sub1]= GenerateLogisticRegression(traindata_sub1,...
+%         trainlabels_sub1,sr,windowSize,displ,traindata_sub1,testDuration,1,25);
+% 
+% %Ensemble Learning
+% [models_sub1,pred_ensem_sub1]= GenerateEnsembleLearning(traindata_sub1, ...
+%     trainlabels_sub1,sr,windowSize,displ,traindata_sub1,testDuration,1,25);
 
 %SVM
-% [models_svm_sub1,pred_svm_sub1]= GenerateSVM(traindata_sub1,trainlabels_sub1,...
-%         sr,windowSize,displ,traindata_sub1,testDuration, 1, 25);
+ [models_svm_sub1,pred_svm_sub1]= GenerateSVM(traindata_sub1,trainlabels_sub1,...
+         sr,windowSize,displ,traindata_sub1,testDuration, 1, 25);
 
 pred_classifier_sub1 = zeros(size(pred_logreg_sub1));
 for i=1:5    

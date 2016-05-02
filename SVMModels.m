@@ -2,28 +2,28 @@ function [ models,chosenFeatures ] = SVMModels( train_ecog_data,train_labels,sam
 
       wins = NumWins(length(train_ecog_data),samplingRate,windowSize,displ);
 
-disp 'Generating feature matrix in ridge regression model';
-featureMat = FeatureGeneration(train_ecog_data,wins,samplingRate,windowSize,displ);
-save(strcat('features_svm_sub',num2str(subject),'.mat'),'featureMat');
+disp 'Generating feature matrix in SVM model';
+% featureMat = FeatureGeneration(train_ecog_data,wins,samplingRate,windowSize,displ);
+% save(strcat('features_svm_sub',num2str(subject),'.mat'),'featureMat');
 
 switch subject
     case 1
-        %         load 'features_emp1_k15.mat';
-        %         load('ranks_emp1_k15.mat');
+                load 'features_svm_sub1.mat';
+                load('ranks_svm_sub1.mat');
         numFeatures = 25;
     case 2
-        %         load 'features_emp2_k15.mat';
-        %         load('ranks_emp2_k15.mat');
+                load 'features_svm_sub2.mat';
+                load('ranks_svm_sub2.mat');
         numFeatures = 25;
     case 3
-        %         load 'features_emp3_k15.mat';
-        %         load('ranks_emp3_k15.mat');
+                load 'features_svm_sub3.mat';
+                load('ranks_svm_sub3.mat');
         numFeatures = 15;
 end
 
 clearvars curr;
 
-    threshold = (1/5)*max(train_labels);
+    threshold = (1/10)*max(train_labels);
 
 %Decimate the training labels
 trainlabels_decimated = zeros([int64(length(train_labels)/(displ*10^3)),5]);
@@ -45,22 +45,22 @@ for i=1:length(threshold)
 %     fun = @(XT,YT,xt,yt)LinearRegressionForPrediction(XT,YT,xt,yt);
 
 disp 'Selecting features';
-K = 15;
+%K = 15;
 features = [];
-ranks = [];
+%ranks = [];
 for i=1:5
-    [rnk,~] = relieff(featureMat,trainlabels_decimated(:,i),K);
-    %      inmodel = sequentialfs(fun,featureMat,trainlabels_decimated(:,i),'keepin',ranks(i,1:numFeatures));
-    %      features = [features , ranks(i,1:numFeatures)];
-    features = [features , rnk(1:numFeatures)];
-    ranks = [ranks;rnk];
+%     [rnk,~] = relieff(featureMat,trainlabels_decimated(:,i),K);
+%     %      inmodel = sequentialfs(fun,featureMat,trainlabels_decimated(:,i),'keepin',ranks(i,1:numFeatures));
+      features = [features , ranks(i,1:numFeatures)];
+%     features = [features , rnk(1:numFeatures)];
+%     ranks = [ranks;rnk];
 end
 
-save(strcat('ranks_svm_sub',num2str(subject),'.mat'),'ranks');
+%save(strcat('ranks_svm_sub',num2str(subject),'.mat'),'ranks');
 
 chosenFeatures = unique(features);
 
-save(strcat('chosenfeatures_svm_sub',num2str(subject),'.mat'),'chosenFeatures');
+%save(strcat('chosenfeatures_svm_sub',num2str(subject),'.mat'),'chosenFeatures');
 
 %    load(strcat('chosenfeatures_k25_sub',num2str(subject),'.mat'));
 
@@ -74,7 +74,8 @@ disp 'Generating feature history';
     models = cell(size(trainlabels_decimated,2),1);
     disp 'Generating models';
     for i=1:size(models,1)
-       models{i} = fitcsvm(featureMat,trainlabels_decimated(:,i),'Standardize',true);
+       models{i} = fitcsvm(featureMat,trainlabels_decimated(:,i), ...
+                'Standardize',true,'KernelFunction','gaussian');
        models{i} = compact(models{i});
        i
     end

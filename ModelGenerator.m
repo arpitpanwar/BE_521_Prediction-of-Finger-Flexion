@@ -48,12 +48,13 @@ history = 45;
 % [models_sub1,pred_ensem_sub1]= GenerateEnsembleLearning(traindata_sub1,trainlabels_sub1,sr,windowSize,displ,testdata_sub1,testduration_sub1,1,25);
 % 
 % %SVM
-% [models_sub1,pred_svm_sub1]= GenerateSVM(traindata_sub1,trainlabels_sub1,sr,windowSize,displ,testdata_sub1,testduration_sub1, 1, 25);
+ [models_sub1,pred_svm_sub1]= GenerateSVM(traindata_sub1,trainlabels_sub1, ...
+        sr,windowSize,displ,testdata_sub1,testduration_sub1, 1, 25);
 % 
 % %pred_classifier_sub1 = mode[round(pred_logreg_sub1),round(pred_ensem_sub1),round(pred_svm_sub1)];
 % 
 
-pred_sub1 = pred_ridreg_sub1;%.*pred_classifier_sub1;%.* pred_logreg_sub1;
+pred_sub1 = pred_ridreg_sub1.*pred_svm_sub1;%.*pred_classifier_sub1;%.* pred_logreg_sub1;
 
 %load('FilterWeights_sub1.mat');
 
@@ -89,12 +90,13 @@ clearvars traindata_sub1 trainlabels_sub1 testdata_sub1 testduration_sub1 filter
 % [models_sub2,pred_ensem_sub2]= GenerateEnsembleLearning(traindata_sub2,trainlabels_sub2,sr,windowSize,displ,testdata_sub2,testduration_sub2,2,25);
 % 
 % %SVM
-% [models_sub2,pred_svm_sub2]= GenerateSVM(traindata_sub2,trainlabels_sub2,sr,windowSize,displ,testdata_sub2,testduration_sub2,2, 25);
+ [models_sub2,pred_svm_sub2]= GenerateSVM(traindata_sub2,trainlabels_sub2,...
+        sr,windowSize,displ,testdata_sub2,testduration_sub2,2, 25);
 % 
 % pred_classifier_sub2 = mode[round(pred_logreg_sub2),round(pred_ensem_sub2),round(pred_svm_sub2)];
 % 
 % 
- pred_sub2 = pred_ridreg_sub2;%.*pred_classifier_sub2;%.* pred_logreg_sub2;
+ pred_sub2 = pred_ridreg_sub2.*pred_svm_sub2;%.*pred_classifier_sub2;%.* pred_logreg_sub2;
 % 
 % load('FilterWeights_sub2.mat');
 % 
@@ -131,11 +133,12 @@ clearvars traindata_sub2 trainlabels_sub2 testdata_sub2 testduration_sub2 filter
 % [model_sub3,pred_ensem_sub3]= GenerateEnsembleLearning(traindata_sub3,trainlabels_sub3,sr,windowSize,displ,testdata_sub3,testduration_sub3,3,25);
 % 
 % %SVM
-% [models_sub3,pred_svm_sub3]= GenerateSVM(traindata_sub3,trainlabels_sub3,sr,windowSize,displ,testdata_sub3,testduration_sub3,3, 25);
+[models_sub3,pred_svm_sub3]= GenerateSVM(traindata_sub3,trainlabels_sub3,...
+        sr,windowSize,displ,testdata_sub3,testduration_sub3,3, 25);
 % 
 % pred_classifier_sub3 = mode[round(pred_logreg_sub3),round(pred_ensem_sub3),round(pred_svm_sub3)];
 % 
- pred_sub3 = pred_ridreg_sub3;%.*pred_classifier_sub3;%.* pred_logreg_sub3;
+ pred_sub3 = pred_ridreg_sub3.*pred_svm_sub3;%.*pred_classifier_sub3;%.* pred_logreg_sub3;
 % 
 % load('FilterWeights_sub3.mat');
 % 
@@ -156,6 +159,11 @@ weights_pred_ridreg = cell(3,1);
 weights_pred_ridreg{1} = weights_sub1;
 weights_pred_ridreg{2} = weights_sub2;
 weights_pred_ridreg{3} = weights_sub3;
+
+models_svm = cell(3,1);
+models_svm{1} = models_sub1;
+models_svm{2} = models_sub2;
+models_svm{3} = models_sub3;
 
 save('SavedModels_10.mat','weights_pred_ridreg');
 %save('LeaderboardPrediction_linreg_postfilter.mat','predicted_dg');

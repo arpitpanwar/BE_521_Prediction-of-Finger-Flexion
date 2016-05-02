@@ -4,21 +4,21 @@ function [ weight_mat,chosenFeatures ] = RidgeRegressionModel( train_ecog_data,.
 wins = NumWins(length(train_ecog_data),samplingRate,windowSize,displ);
 
 disp 'Generating feature matrix in ridge regression model';
-featureMat = FeatureGeneration(train_ecog_data,wins,samplingRate,windowSize,displ);
-save(strcat('features_sub',num2str(subject),'.mat'),'featureMat');
+% featureMat = FeatureGeneration(train_ecog_data,wins,samplingRate,windowSize,displ);
+% save(strcat('features_sub',num2str(subject),'.mat'),'featureMat');
 
 switch subject
     case 1
-        %         load 'features_emp1_k15.mat';
-        %         load('ranks_emp1_k15.mat');
+                load 'features_sub1.mat';
+                load('ranks_sub1.mat');
         numFeatures = 25;
     case 2
-        %         load 'features_emp2_k15.mat';
-        %         load('ranks_emp2_k15.mat');
-        numFeatures = 55;
+                load 'features_sub2.mat';
+                load('ranks_sub2.mat');
+        numFeatures = 25;
     case 3
-        %         load 'features_emp3_k15.mat';
-        %         load('ranks_emp3_k15.mat');
+                load 'features_sub3.mat';
+                load('ranks_sub3.mat');
         numFeatures = 15;
 end
 
@@ -40,7 +40,7 @@ trainlabels_decimated = [train_labl_test(1:end-2,:);train_labl_test(length(train
 %     fun = @(XT,YT,xt,yt)LinearRegressionForPrediction(XT,YT,xt,yt);
 
 disp 'Selecting features';
-K = 15;
+K = 10;
 features = [];
 ranks = [];
 for i=1:5
