@@ -118,9 +118,9 @@ GenerateRidgeRegression(traindata_sub3,...
 %         sr,windowSize,displ,traindata_sub3,length(traindata_sub3)/sr,3, 25);
 	
 
-pred_classifier_sub2 = zeros(size(pred_logreg_sub2));
+pred_classifier_sub3 = zeros(size(pred_logreg_sub3));
 for i=1:5    
-    pred_classifier_sub2(:,i) = mean([(pred_logreg_sub2(:,i)),(pred_ensem_sub2(:,i))],2);
+    pred_classifier_sub3(:,i) = mean([(pred_logreg_sub3(:,i)),(pred_ensem_sub3(:,i))],2);
 end
     
 pred_cv_sub3 = pred_ridreg_sub3.*pred_classifier_sub3;
@@ -149,8 +149,8 @@ weights_pred_ridreg{2} = weights_sub2;
 weights_pred_ridreg{3} = weights_sub3;
 
 models_ensemble = cell(3,1);
-models_ensemble{1} = model_sub1;
-models_ensemble{2} = model_sub2;
+models_ensemble{1} = models_sub1;
+models_ensemble{2} = models_sub2;
 models_ensemble{3} = model_sub3;
 
 save('SavedModels.mat','weights_logreg','weights_pred_ridreg','models_ensemble');

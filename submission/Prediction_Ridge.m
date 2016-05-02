@@ -1,25 +1,17 @@
-function [ pred_rounded ] = Prediction_Ensemble(models,train_limits,...
-        test_data,samplingRate,duration,windowSize,displ,chosenFeatures,history,subject  )
+function [ pred_rounded ] = Prediction_Ridge( weight_mat,train_limits,...
+    test_data,samplingRate,duration,windowSize,displ,chosenFeatures,history,subject )
     
  wins = NumWins(length(test_data),samplingRate,windowSize,displ);
 
     disp 'Generating features while prediction';
     featureMat = FeatureGeneration(test_data,wins,samplingRate,windowSize,displ);
-    
-    featureMat = zscore(featureMat);
+        
     featureMat = featureMat(:,chosenFeatures);
-    %featureMat = FeatureHistoryGeneration( featureMat,history );
+    featureMat = FeatureHistoryGeneration( featureMat,history );
+    featureMat = [ones([size(featureMat,1),1]),featureMat];
     
-    disp 'Predicting Ensemble';
+    pred = featureMat*weight_mat;
     
-    pred = zeros([length(featureMat),5]);
-    
-    for i=1:5
-        pred(:,i) = predict(models{i},featureMat);
-    end
-    
-
-   % pred = round(pred);
     % Spline function takes in the time that y occured and what time y should
     % occur
     pred_splined = zeros([length(test_data),5]);
@@ -29,7 +21,6 @@ function [ pred_rounded ] = Prediction_Ensemble(models,train_limits,...
         pred_splined(:,i) = spline((stepval:stepval:duration),pred(:,i),(0.001:0.001:duration));
     end
 
-    %Rounding
 %     %Rounding
 %     pred_rounded = round(pred_splined);
     pred_rounded = pred_splined;
@@ -43,7 +34,6 @@ function [ pred_rounded ] = Prediction_Ensemble(models,train_limits,...
         pred_remove = find(pred_rounded > maximum);
         pred_rounded(pred_remove) = maximum;
     end
-
 
 end
 
