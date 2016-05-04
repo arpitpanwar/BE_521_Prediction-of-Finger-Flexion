@@ -3,27 +3,27 @@ function [ models,chosenFeatures ] = SVMModels( train_ecog_data,train_labels,sam
       wins = NumWins(length(train_ecog_data),samplingRate,windowSize,displ);
 
 disp 'Generating feature matrix in SVM model';
-% featureMat = FeatureGeneration(train_ecog_data,wins,samplingRate,windowSize,displ);
-% save(strcat('features_svm_sub',num2str(subject),'.mat'),'featureMat');
+featureMat = FeatureGeneration(train_ecog_data,wins,samplingRate,windowSize,displ);
+save(strcat('features_svm_sub',num2str(subject),'.mat'),'featureMat');
 
 switch subject
     case 1
-                load 'features_svm_sub1.mat';
-                load('ranks_svm_sub1.mat');
+%                  load 'features_svm_sub1.mat';
+%                  load('ranks_svm_sub1.mat');
         numFeatures = 25;
     case 2
-                load 'features_svm_sub2.mat';
-                load('ranks_svm_sub2.mat');
+%                 load 'features_sub2.mat';
+%                 load('ranks_sub2.mat');
         numFeatures = 25;
     case 3
-                load 'features_svm_sub3.mat';
-                load('ranks_svm_sub3.mat');
+%                 load 'features_sub3.mat';
+%                 load('ranks_sub3.mat');
         numFeatures = 15;
 end
 
 clearvars curr;
 
-    threshold = (1/10)*max(train_labels);
+threshold = (1/5)*max(train_labels);
 
 %Decimate the training labels
 trainlabels_decimated = zeros([int64(length(train_labels)/(displ*10^3)),5]);
@@ -38,44 +38,44 @@ end
 trainlabels_decimated = trainlabels_decimated(1:end-1,:);
 
 for i=1:length(threshold)
-        trainlabels_decimated(trainlabels_decimated(:,i)>=threshold(i),i) = 1;
-        trainlabels_decimated(trainlabels_decimated(:,i)<threshold(i),i) = 0; 
-  end 
+    trainlabels_decimated(trainlabels_decimated(:,i)>=threshold(i),i) = 1;
+    trainlabels_decimated(trainlabels_decimated(:,i)<threshold(i),i) = 0;
+end
 
 %     fun = @(XT,YT,xt,yt)LinearRegressionForPrediction(XT,YT,xt,yt);
 
 disp 'Selecting features';
-%K = 15;
+K = 10;
 features = [];
-%ranks = [];
+ranks = [];
 for i=1:5
-%     [rnk,~] = relieff(featureMat,trainlabels_decimated(:,i),K);
-%     %      inmodel = sequentialfs(fun,featureMat,trainlabels_decimated(:,i),'keepin',ranks(i,1:numFeatures));
-      features = [features , ranks(i,1:numFeatures)];
-%     features = [features , rnk(1:numFeatures)];
-%     ranks = [ranks;rnk];
+    [rnk,~] = relieff(featureMat,trainlabels_decimated(:,i),K);
+    %      inmodel = sequentialfs(fun,featureMat,trainlabels_decimated(:,i),'keepin',ranks(i,1:numFeatures));
+     % features = [features , ranks(i,1:numFeatures)];
+    features = [features , rnk(1:numFeatures)];
+    ranks = [ranks;rnk];
 end
 
-%save(strcat('ranks_svm_sub',num2str(subject),'.mat'),'ranks');
+save(strcat('ranks_svm_sub',num2str(subject),'.mat'),'ranks');
 
 chosenFeatures = unique(features);
 
-%save(strcat('chosenfeatures_svm_sub',num2str(subject),'.mat'),'chosenFeatures');
+save(strcat('chosenfeatures_svm_sub',num2str(subject),'.mat'),'chosenFeatures');
 
-%    load(strcat('chosenfeatures_k25_sub',num2str(subject),'.mat'));
+  % load(strcat('chosenfeatures_svm_sub',num2str(subject),'.mat'));
 
 featureMat = featureMat(:,chosenFeatures);
 
 disp 'Generating feature history';
 
 %featureMat = FeatureHistoryGeneration( featureMat,history );
-          
+  knlFun = @(X,Y)kernel_intersection(X,Y);
     %Generating weight matrix
     models = cell(size(trainlabels_decimated,2),1);
     disp 'Generating models';
     for i=1:size(models,1)
        models{i} = fitcsvm(featureMat,trainlabels_decimated(:,i), ...
-                'Standardize',true,'KernelFunction','gaussian');
+                'Standardize',true,'KernelFunction','Polynomial','KernelScale','auto');
        models{i} = compact(models{i});
        i
     end

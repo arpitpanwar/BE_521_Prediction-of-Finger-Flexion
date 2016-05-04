@@ -4,7 +4,7 @@ function [ pred_rounded ] = Prediction_SVM( models,train_limits,test_data,sampli
 
     disp 'Generating features while prediction';
     featureMat = FeatureGeneration(test_data,wins,samplingRate,windowSize,displ);
-        
+    %featureMat = zscore(featureMat);
     featureMat = featureMat(:,chosenFeatures);
    % featureMat = FeatureHistoryGeneration( featureMat,history );
     

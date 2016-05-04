@@ -5,7 +5,7 @@ function [ exists ] = savefileExists(filename)
         % model
     if exist(filename)
         exists = 1;
-        load(file)
+        load(filename)
     else
         exists = 0;
     end

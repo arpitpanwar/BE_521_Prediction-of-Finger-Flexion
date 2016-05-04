@@ -41,20 +41,24 @@ history = 45;
 %[weights_sub1,pred_stepreg_sub1]= GenerateStepwiseRegression(traindata_sub1,trainlabels_sub1,sr,windowSize,displ,testdata_sub1,testduration_sub1,1);
 
 % %LogisticRegression
-% [weights_sub1_log,pred_logreg_sub1]= GenerateLogisticRegression(traindata_sub1,...
-%         trainlabels_sub1,sr,windowSize,displ,testdata_sub1,testduration_sub1,1,25);
+[weights_sub1_logMove,pred_logregMove_sub1]= GenerateMovementReduction(traindata_sub1,...
+        trainlabels_sub1,sr,windowSize,displ,testdata_sub1,testduration_sub1,1,3, 800,400);
 % 
 % %Ensemble Learning
 % [models_sub1,pred_ensem_sub1]= GenerateEnsembleLearning(traindata_sub1,trainlabels_sub1,sr,windowSize,displ,testdata_sub1,testduration_sub1,1,25);
 % 
 % %SVM
- [models_sub1,pred_svm_sub1]= GenerateSVM(traindata_sub1,trainlabels_sub1, ...
-        sr,windowSize,displ,testdata_sub1,testduration_sub1, 1, 25);
+%  [models_sub1,pred_svm_sub1]= GenerateSVM(traindata_sub1,trainlabels_sub1, ...
+%         sr,windowSize,displ,testdata_sub1,testduration_sub1, 1, 25);
 % 
 % %pred_classifier_sub1 = mode[round(pred_logreg_sub1),round(pred_ensem_sub1),round(pred_svm_sub1)];
 % 
+pred_sub1 = zeros(size(pred_ridreg_sub1));
 
-pred_sub1 = pred_ridreg_sub1.*pred_svm_sub1;%.*pred_classifier_sub1;%.* pred_logreg_sub1;
+for i=1:5
+pred_sub1(:,i) = pred_ridreg_sub1(:,i).*pred_logregMove_sub1{2};
+end
+%pred_sub1 = pred_ridreg_sub1.*pred_svm_sub1;%.*pred_classifier_sub1;%.* pred_logreg_sub1;
 
 %load('FilterWeights_sub1.mat');
 
@@ -90,13 +94,24 @@ clearvars traindata_sub1 trainlabels_sub1 testdata_sub1 testduration_sub1 filter
 % [models_sub2,pred_ensem_sub2]= GenerateEnsembleLearning(traindata_sub2,trainlabels_sub2,sr,windowSize,displ,testdata_sub2,testduration_sub2,2,25);
 % 
 % %SVM
- [models_sub2,pred_svm_sub2]= GenerateSVM(traindata_sub2,trainlabels_sub2,...
-        sr,windowSize,displ,testdata_sub2,testduration_sub2,2, 25);
+%  [models_sub2,pred_svm_sub2]= GenerateSVM(traindata_sub2,trainlabels_sub2,...
+%         sr,windowSize,displ,testdata_sub2,testduration_sub2,2, 25);
+
+[weights_logMove_sub2,pred_logregMove_sub2]= GenerateMovementReduction(traindata_sub2,...
+        trainlabels_sub2,sr,windowSize,displ,testdata_sub2,testduration_sub2,2,3, 400,400);
+
 % 
 % pred_classifier_sub2 = mode[round(pred_logreg_sub2),round(pred_ensem_sub2),round(pred_svm_sub2)];
 % 
 % 
- pred_sub2 = pred_ridreg_sub2.*pred_svm_sub2;%.*pred_classifier_sub2;%.* pred_logreg_sub2;
+
+pred_sub2 = zeros(size(pred_ridreg_sub2));
+
+for i=1:5
+    pred_sub2(:,i) = pred_ridreg_sub2(:,i).*pred_logregMove_sub2{2};
+end
+
+% pred_sub2 = pred_ridreg_sub2.*pred_svm_sub2;%.*pred_classifier_sub2;%.* pred_logreg_sub2;
 % 
 % load('FilterWeights_sub2.mat');
 % 
@@ -133,12 +148,22 @@ clearvars traindata_sub2 trainlabels_sub2 testdata_sub2 testduration_sub2 filter
 % [model_sub3,pred_ensem_sub3]= GenerateEnsembleLearning(traindata_sub3,trainlabels_sub3,sr,windowSize,displ,testdata_sub3,testduration_sub3,3,25);
 % 
 % %SVM
-[models_sub3,pred_svm_sub3]= GenerateSVM(traindata_sub3,trainlabels_sub3,...
-        sr,windowSize,displ,testdata_sub3,testduration_sub3,3, 25);
+% [models_sub3,pred_svm_sub3]= GenerateSVM(traindata_sub3,trainlabels_sub3,...
+%         sr,windowSize,displ,testdata_sub3,testduration_sub3,3, 25);
 % 
 % pred_classifier_sub3 = mode[round(pred_logreg_sub3),round(pred_ensem_sub3),round(pred_svm_sub3)];
 % 
- pred_sub3 = pred_ridreg_sub3.*pred_svm_sub3;%.*pred_classifier_sub3;%.* pred_logreg_sub3;
+
+[weights_logMove_sub3,pred_logregMove_sub3]= GenerateMovementReduction(traindata_sub3,...
+        trainlabels_sub3,sr,windowSize,displ,testdata_sub3,testduration_sub3,3,3, 400,400);
+
+pred_sub3 = zeros(size(pred_ridreg_sub3));
+
+for i=1:5
+    pred_sub3(:,i) = pred_ridreg_sub3(:,i).*pred_logregMove_sub3{2};
+end
+
+%pred_sub3 = pred_ridreg_sub3.*pred_svm_sub3;%.*pred_classifier_sub3;%.* pred_logreg_sub3;
 % 
 % load('FilterWeights_sub3.mat');
 % 
@@ -165,5 +190,5 @@ models_svm{1} = models_sub1;
 models_svm{2} = models_sub2;
 models_svm{3} = models_sub3;
 
-save('SavedModels_10.mat','weights_pred_ridreg');
-%save('LeaderboardPrediction_linreg_postfilter.mat','predicted_dg');
+%save('SavedModels_10.mat','weights_pred_ridreg');
+save('LeaderboardPrediction_ridreg_logreg.mat','predicted_dg');

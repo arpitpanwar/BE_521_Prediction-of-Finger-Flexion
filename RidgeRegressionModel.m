@@ -40,22 +40,22 @@ trainlabels_decimated = [train_labl_test(1:end-2,:);train_labl_test(length(train
 %     fun = @(XT,YT,xt,yt)LinearRegressionForPrediction(XT,YT,xt,yt);
 
 disp 'Selecting features';
-K = 10;
+%K = 10;
 features = [];
-ranks = [];
+%ranks = [];
 for i=1:5
-    [rnk,~] = relieff(featureMat,trainlabels_decimated(:,i),K);
-    %      inmodel = sequentialfs(fun,featureMat,trainlabels_decimated(:,i),'keepin',ranks(i,1:numFeatures));
-    %      features = [features , ranks(i,1:numFeatures)];
-    features = [features , rnk(1:numFeatures)];
-    ranks = [ranks;rnk];
+%     [rnk,~] = relieff(featureMat,trainlabels_decimated(:,i),K);
+%     %      inmodel = sequentialfs(fun,featureMat,trainlabels_decimated(:,i),'keepin',ranks(i,1:numFeatures));
+    features = [features , ranks(i,1:numFeatures)];
+%     features = [features , rnk(1:numFeatures)];
+%     ranks = [ranks;rnk];
 end
 
-save(strcat('ranks_sub',num2str(subject),'.mat'),'ranks');
+%save(strcat('ranks_sub',num2str(subject),'.mat'),'ranks');
 
 chosenFeatures = unique(features);
 
-save(strcat('chosenfeatures_sub',num2str(subject),'.mat'),'chosenFeatures');
+%save(strcat('chosenfeatures_sub',num2str(subject),'.mat'),'chosenFeatures');
 
 %    load(strcat('chosenfeatures_k25_sub',num2str(subject),'.mat'));
 
